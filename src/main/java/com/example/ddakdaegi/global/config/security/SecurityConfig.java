@@ -43,10 +43,9 @@ public class SecurityConfig {
 			.addFilterBefore(jwtFilter, SecurityContextHolderAwareRequestFilter.class)
 			//인가 설정
 			.authorizeHttpRequests(authorize -> authorize
-//				.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-//				.requestMatchers("/api/v1/auth/**").permitAll()
-//				.anyRequest().authenticated() // 사용자 관련 api 구현시 주석 해제
-					.anyRequest().permitAll()
+				.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+				.requestMatchers("/api/v1/auth/**").permitAll()
+				.anyRequest().authenticated() // 사용자 관련 api 구현시 주석 해제
 			)
 			//세션은 사용하지않도록 설정
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

@@ -89,12 +89,7 @@ public class Member extends Timestamped {
 		this.password = password;
 	}
 
-	public void setAdmin() {
-		this.role = UserRole.ROLE_ADMIN;
+	public void updateRole(UserRole userRole) {
+		this.role = userRole;
 	}
-
-	public void setUser() {
-		this.role = UserRole.ROLE_USER;
-	}
-
 }
