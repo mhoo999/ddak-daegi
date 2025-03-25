@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PromotionProduct extends Timestamped {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
@@ -39,4 +39,15 @@ public class PromotionProduct extends Timestamped {
 
 	@Column(nullable = false)
 	private Long price;
+
+	public PromotionProduct(Promotion promotion, Product product, Long stock, Long purchaseLimit,
+		DiscountPolicy discountPolicy, Long discountValue, Long price) {
+		this.promotion = promotion;
+		this.product = product;
+		this.stock = stock;
+		this.purchaseLimit = purchaseLimit;
+		this.discountPolicy = discountPolicy;
+		this.discountValue = discountValue;
+		this.price = price;
+	}
 }
