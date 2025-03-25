@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class PromotionResponseDto {
+public class PromotionResponse {
 
 	private final Long id;
 	private final String name;
@@ -15,7 +15,7 @@ public class PromotionResponseDto {
 	private final LocalDateTime created_at;
 	private final LocalDateTime updated_at;
 
-	public PromotionResponseDto(Long id, String name, String banner_image, LocalDateTime start_date,
+	public PromotionResponse(Long id, String name, String banner_image, LocalDateTime start_date,
 		LocalDateTime end_date, boolean isActive, LocalDateTime created_at, LocalDateTime updated_at) {
 		this.id = id;
 		this.name = name;

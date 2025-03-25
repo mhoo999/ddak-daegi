@@ -18,7 +18,7 @@ public class PromotionProduct extends Timestamped {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "event_id")
+	@JoinColumn(name = "promotion_id")
 	private Promotion promotion;
 
 	@ManyToOne

@@ -1,8 +1,8 @@
 package com.example.ddakdaegi.domain.promotion.service;
 
-import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionRequestDto;
-import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequestDto;
-import com.example.ddakdaegi.domain.promotion.dto.response.PromotionResponseDto;
+import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionRequest;
+import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequest;
+import com.example.ddakdaegi.domain.promotion.dto.response.PromotionResponse;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,22 +13,22 @@ public class PromotionService {
 
 	private final PromotionRepository promotionRepository;
 
-	public PromotionResponseDto create(CreatePromotionRequestDto dto) {
+	public PromotionResponse createPromotion(CreatePromotionRequest dto) {
 		return null;
 	}
 
-	public PromotionResponseDto getAll() {
+	public PromotionResponse getPromotions() {
 		return null;
 	}
 
-	public PromotionResponseDto get(Long id) {
+	public PromotionResponse getPromotionById(Long id) {
 		return null;
 	}
 
-	public PromotionResponseDto update(Long id, UpdatePromotionRequestDto request) {
+	public PromotionResponse updatePromotion(Long id, UpdatePromotionRequest request) {
 		return null;
 	}
 
-	public void delete(Long id) {
+	public void deletePromotion(Long id) {
 	}
 }
