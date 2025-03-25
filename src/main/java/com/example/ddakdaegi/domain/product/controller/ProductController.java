@@ -3,10 +3,12 @@ package com.example.ddakdaegi.domain.product.controller;
 import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.service.ProductService;
+import com.example.ddakdaegi.global.common.dto.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,11 +30,12 @@ public class ProductController {
 	*/
 	@PostMapping("/v1/products")
 	public ResponseEntity<ProductResponse> saveProduct(
-		//@PathVariable Long memberId,
+		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ProductRequest productRequest
 	) {
 
-		ProductResponse productResponse = productService.saveProduct(/*memberId,*/ productRequest);
+		ProductResponse productResponse = productService.saveProduct(authUser, productRequest);
+
 		return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
 
 	}

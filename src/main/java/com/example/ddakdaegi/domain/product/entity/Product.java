@@ -47,12 +47,14 @@ public class Product extends Timestamped {
 
 	// 생성자
 	public Product(
+		Member member,
 		String description,
 		String name,
 		Image image,
 		Long stock,
 		Long price
 	) {
+		this.member = member;
 		this.description = description;
 		this.name = name;
 		this.image = image;

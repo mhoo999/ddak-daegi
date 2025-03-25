@@ -1,9 +1,11 @@
 package com.example.ddakdaegi.domain.product.service;
 
+import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
+import com.example.ddakdaegi.global.common.dto.AuthUser;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,11 +44,12 @@ public class ProductService {
 		상품 등록 메서드
 	*/
 	@Transactional
-	public ProductResponse saveProduct(/*Long memberId,*/ ProductRequest productRequest) {
+	public ProductResponse saveProduct(AuthUser authUser, ProductRequest productRequest) {
 
-		//Member member = memberRepository.findMemberById(memberId);
+		Member member = Member.fromAuthUser(authUser);
 
 		Product product = new Product(
+			member,
 			productRequest.getDescription(),
 			productRequest.getName(),
 			productRequest.getImage(),
