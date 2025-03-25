@@ -10,37 +10,56 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Entity
+@Table(name = "product")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends Timestamped {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String description;
+	@ManyToOne
+	@JoinColumn(name = "member_id")
+	private Member member;
 
-    @Column(nullable = false)
-    private String name;
+	private String description;
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image image;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(nullable = false)
-    private Boolean soldOut;
+	@OneToOne
+	@JoinColumn(name = "image_id")
+	private Image image;
 
-    @Column(nullable = false)
-    private Long stock;
+	@Column(nullable = false)
+	private Boolean soldOut;
 
-    @Column(nullable = false)
-    private Long price;
+	@Column(nullable = false)
+	private Long stock;
 
-    @Column
-    private LocalDateTime deletedAt;
+	@Column(nullable = false)
+	private Long price;
+
+	@Column
+	private LocalDateTime deletedAt; // soft delete 를 위한 변수
+
+	// 생성자
+	public Product(
+		String description,
+		String name,
+		Image image,
+		Long stock,
+		Long price
+	) {
+		this.description = description;
+		this.name = name;
+		this.image = image;
+		this.stock = stock;
+		this.price = price;
+
+		this.soldOut = false; // 기본 값
+	}
 
 }
