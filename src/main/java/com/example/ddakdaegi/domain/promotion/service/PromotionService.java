@@ -14,6 +14,8 @@ import com.example.ddakdaegi.domain.promotion.enums.DiscountPolicy;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionProductRepository;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
 import com.example.ddakdaegi.global.common.exception.BaseException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +32,13 @@ public class PromotionService {
 
 	@Transactional
 	public PromotionResponse createPromotion(CreatePromotionRequest request) {
-		if (request.getStart_date().isAfter(request.getEnd_date())) {
+		if (request.getStartDate().isAfter(request.getEndDate())) {
 			throw new BaseException(INVALID_DATE_RANGE);
 		}
 
 		Image newBanner = null;
 
-		Promotion promotion = Promotion.create(request.getName(), newBanner, request.getStart_date(), request.getEnd_date());
+		Promotion promotion = Promotion.create(request.getName(), newBanner, request.getStartDate(), request.getEndDate());
 		promotionRepository.save(promotion);
 
 		for (CreatePromotionProductRequest ppRequest : request.getPromotionProducts()) {
@@ -58,6 +60,7 @@ public class PromotionService {
 			);
 
 			PromotionProduct promotionProduct = new PromotionProduct(
+				promotion,
 				product,
 				ppRequest.getStock(),
 				ppRequest.getPurchaseLimit(),
@@ -66,10 +69,8 @@ public class PromotionService {
 				discountedPrice
 			);
 
-			promotion.addPromotionProduct(promotionProduct);
+			promotionProductRepository.save(promotionProduct);
 		}
-
-		promotionRepository.save(promotion);
 
 		return new PromotionResponse(
 			promotion.getId(),
@@ -82,6 +83,7 @@ public class PromotionService {
 		);
 	}
 
+	@Transactional(readOnly = true)
 	public List<PromotionResponse> getPromotions() {
 		List<Promotion> promotions = promotionRepository.findAll();
 
@@ -90,6 +92,7 @@ public class PromotionService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public PromotionResponse getPromotionById(Long promotionId) {
 		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
 
@@ -104,15 +107,21 @@ public class PromotionService {
 		);
 	}
 
+	@Transactional
 	public PromotionResponse updatePromotion(Long promotionId, UpdatePromotionRequest request) {
-		if (request.getStart_date().isAfter(request.getEnd_date())) {
+		if (request.getStartDate().isAfter(request.getEndDate())) {
 			throw new BaseException(INVALID_DATE_RANGE);
 		}
 
 		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
 
 		Image newBanner = null;
-		promotion.update(request, newBanner);
+		promotion.update(
+			request.getName(),
+			newBanner,
+			request.getStartDate(),
+			request.getEndDate()
+		);
 
 		return new PromotionResponse(
 			promotion.getId(),
@@ -132,13 +141,21 @@ public class PromotionService {
 	}
 
 	private Long calculateDiscountedPrice(Long originalPrice, DiscountPolicy policy, Long value) {
+		BigDecimal original = BigDecimal.valueOf(originalPrice);
+		BigDecimal result;
+
 		if (policy == DiscountPolicy.RATE) {
-			double rate = value / 100.0;
-			return Math.round(originalPrice * (1 - rate));
+			BigDecimal rate = BigDecimal.valueOf(value).divide(BigDecimal.valueOf(100)); // value = 10 → 0.1
+			result = original.multiply(BigDecimal.ONE.subtract(rate));
 		} else if (policy == DiscountPolicy.FIXED) {
-			return Math.max(0, originalPrice - value);
+			result = original.subtract(BigDecimal.valueOf(value));
+			if (result.compareTo(BigDecimal.ZERO) < 0) {
+				result = BigDecimal.ZERO;
+			}
 		} else {
 			throw new BaseException(WRONG_POLICY);
 		}
+
+		return result.setScale(0, RoundingMode.HALF_UP).longValue();
 	}
 }

@@ -27,10 +27,6 @@ public class Promotion extends Timestamped {
     @JoinColumn(name = "banner_id")
     private Image banner;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "promotion_id")
-    private List<PromotionProduct> promotionProducts;
-
     @Column(nullable = false)
     private LocalDateTime startTime;
 
@@ -43,7 +39,6 @@ public class Promotion extends Timestamped {
     public Promotion(String name, Image banner, LocalDateTime startTime, LocalDateTime endTime, Boolean isActive) {
         this.name = name;
         this.banner = banner;
-        this.promotionProducts = new ArrayList<>();
         this.startTime = startTime;
         this.endTime = endTime;
         this.isActive = isActive;
@@ -55,27 +50,19 @@ public class Promotion extends Timestamped {
         return promotion;
     }
 
-    public void addPromotionProduct(PromotionProduct promotionProduct) {
-        this.promotionProducts.add(promotionProduct);
-    }
-
-    public void update(UpdatePromotionRequest request, Image newBannerImage) {
-        if (request.getName() != null) {
-            this.name = request.getName();
+    public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate) {
+        if (name != null) {
+            this.name = name;
         }
-
         if (newBannerImage != null) {
             this.banner = newBannerImage;
         }
-
-        if (request.getStart_date() != null) {
-            this.startTime = request.getStart_date();
+        if (startDate != null) {
+            this.startTime = startDate;
         }
-
-        if (request.getEnd_date() != null) {
-            this.endTime = request.getEnd_date();
+        if (endDate != null) {
+            this.endTime = endDate;
         }
-
         updateIsActive();
     }
 

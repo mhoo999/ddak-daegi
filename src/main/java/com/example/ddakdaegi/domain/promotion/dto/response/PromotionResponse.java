@@ -9,23 +9,23 @@ public class PromotionResponse {
 
 	private final Long id;
 	private final String name;
-//	private final String banner_image;
-	private final LocalDateTime start_date;
+//	private final String bannerImage;
+	private final LocalDateTime startDate;
 	private final LocalDateTime end_date;
 	private final boolean isActive;
 	private final LocalDateTime created_at;
 	private final LocalDateTime updated_at;
 
-	public PromotionResponse(Long id, String name, LocalDateTime start_date,
-		LocalDateTime end_date, boolean isActive, LocalDateTime created_at, LocalDateTime updated_at) {
+	public PromotionResponse(Long id, String name, LocalDateTime startDate,
+		LocalDateTime endDate, boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.id = id;
 		this.name = name;
-//		this.banner_image = banner_image;
-		this.start_date = start_date;
-		this.end_date = end_date;
+//		this.bannerImage = bannerImage;
+		this.startDate = startDate;
+		this.end_date = endDate;
 		this.isActive = isActive;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
+		this.created_at = createdAt;
+		this.updated_at = updatedAt;
 	}
 
 	public static PromotionResponse from(Promotion promotion) {
