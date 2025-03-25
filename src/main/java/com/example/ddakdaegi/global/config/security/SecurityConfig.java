@@ -15,7 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
 
 @Slf4j
@@ -39,8 +39,8 @@ public class SecurityConfig {
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
 			.rememberMe(AbstractHttpConfigurer::disable)
-			.addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtExceptionFilter, SecurityContextHolderAwareRequestFilter.class)
+			.addFilterBefore(jwtFilter, SecurityContextHolderAwareRequestFilter.class)
 			//인가 설정
 			.authorizeHttpRequests(authorize -> authorize
 //				.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

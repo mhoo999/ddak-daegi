@@ -12,7 +12,6 @@ public class JwtConstants {
 	public String key;
 
 	@Value("${jwt.access.expiration}")
-	public int accessExpTime;
 	public int ACCESS_EXP_TIME;
 
 	@Value("${jwt.refresh.expiration}")
