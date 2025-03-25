@@ -22,6 +22,12 @@ public enum ErrorCode {
 	// product 예외처리
 
 	// promotion 예외처리
+	NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다."),
+	SOLD_OUT(HttpStatus.BAD_REQUEST, "해당 상품은 품절 상태입니다."),
+	OVER_STOCK(HttpStatus.BAD_REQUEST, "프로모션 재고가 상품 보유 재고보다 많을 수 없습니다."),
+	WRONG_POLICY(HttpStatus.BAD_REQUEST, "잘못된 할인 정책입니다."),
+	NOT_FOUND_PROMOTION(HttpStatus.BAD_REQUEST, "프로모션을 찾을 수 없습니다."),
+	INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "종료일이 시작일보다 먼저 올 수 없습니다."),
 
 	TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "잘못된 타입 입니다."),
 	SERVER_NOT_WORK(HttpStatus.INTERNAL_SERVER_ERROR, "서버문제로인해 실패했습니다.");

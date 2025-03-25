@@ -12,11 +12,11 @@ public class CreatePromotionRequest {
 
 	private String name;
 	private String banner_image;
-	private List<PromotionProduct> promotionProducts;
+	private List<CreatePromotionProductRequest> promotionProducts;
 	private LocalDateTime start_date;
 	private LocalDateTime end_date;
 
-	public CreatePromotionRequest(String name, String banner_image, List<PromotionProduct> promotionProducts,
+	public CreatePromotionRequest(String name, String banner_image, List<CreatePromotionProductRequest> promotionProducts,
 		LocalDateTime start_date, LocalDateTime end_date) {
 		this.name = name;
 		this.banner_image = banner_image;

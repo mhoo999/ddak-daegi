@@ -5,6 +5,7 @@ import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequest
 import com.example.ddakdaegi.domain.promotion.dto.response.PromotionResponse;
 import com.example.ddakdaegi.domain.promotion.service.PromotionService;
 import com.example.ddakdaegi.global.common.response.Response;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +29,7 @@ public class PromotionController {
 	}
 
 	@GetMapping("/v1/promotions")
-	public Response<PromotionResponse> getPromotions() {
+	public Response<List<PromotionResponse>> getPromotions() {
 		return Response.of(promotionService.getPromotions());
 	}
 

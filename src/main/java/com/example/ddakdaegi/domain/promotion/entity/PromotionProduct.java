@@ -18,10 +18,6 @@ public class PromotionProduct extends Timestamped {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "promotion_id")
-	private Promotion promotion;
-
-	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
 
@@ -39,4 +35,14 @@ public class PromotionProduct extends Timestamped {
 
 	@Column(nullable = false)
 	private Long price;
+
+	public PromotionProduct(Product product, Long stock, Long purchaseLimit,
+		DiscountPolicy discountPolicy, Long discountValue, Long price) {
+		this.product = product;
+		this.stock = stock;
+		this.purchaseLimit = purchaseLimit;
+		this.discountPolicy = discountPolicy;
+		this.discountValue = discountValue;
+		this.price = price;
+	}
 }
