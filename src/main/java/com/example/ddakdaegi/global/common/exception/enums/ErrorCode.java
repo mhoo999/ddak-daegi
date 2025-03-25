@@ -8,6 +8,15 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // member 예외처리
+
+    // order 예외처리
+
+    // product 예외처리
+
+    // promotion 예외처리
+
+
     TYPE_MISMATCH(HttpStatus.BAD_REQUEST,"잘못된 타입 입니다."),
     SERVER_NOT_WORK(HttpStatus.INTERNAL_SERVER_ERROR,"서버문제로인해 실패했습니다.");
 
@@ -15,6 +24,6 @@ public enum ErrorCode {
     private final String message;
 
     public void apply(HttpServletResponse response) {
-        response.setStatus(this.getHttpStatus().value());
+        response.setStatus(this.httpStatus.value());
     }
 }
