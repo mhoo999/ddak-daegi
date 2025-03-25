@@ -77,4 +77,8 @@ public class JwtProvider {
 		}
 
 	}
+
+	public String getSubject(String token) {
+		return extractClaims(token).getSubject();
+	}
 }
