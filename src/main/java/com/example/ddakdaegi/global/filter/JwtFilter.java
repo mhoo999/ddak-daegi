@@ -1,10 +1,11 @@
 package com.example.ddakdaegi.global.filter;
 
+import static com.example.ddakdaegi.global.util.jwt.JwtConstants.REFRESH_NAME;
+
 import com.example.ddakdaegi.domain.member.enums.UserRole;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.config.security.JwtAuthenticationToken;
 import com.example.ddakdaegi.global.util.CookieUtil;
-import com.example.ddakdaegi.global.util.jwt.JwtConstants;
 import com.example.ddakdaegi.global.util.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -26,7 +27,6 @@ public class JwtFilter extends OncePerRequestFilter {
 	private final JwtProvider jwtProvider;
 	private final String REISSUE_URL = "/reissue";
 	private final CookieUtil cookieUtil;
-	private final JwtConstants jwtConstants;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = httpRequest.getHeader("Authorization");
 
 		if (request.getRequestURI().endsWith(REISSUE_URL)) {
-			String refreshToken = cookieUtil.getCookieValue(request, jwtConstants.getREFRESH_NAME());
+			String refreshToken = cookieUtil.getCookieValue(request, REFRESH_NAME);
 			handleRefreshToken(refreshToken);
 		} else if (token != null && token.startsWith("Bearer ")) {
 			String jwt = jwtProvider.substringToken(token);
