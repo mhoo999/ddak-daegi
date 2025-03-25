@@ -6,6 +6,7 @@ import com.example.ddakdaegi.domain.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -14,6 +15,7 @@ public class RefreshTokenService {
 
 	private final RefreshTokenRepository refreshTokenRepository;
 
+	@Transactional
 	public void saveOrUpdate(Member member, String newRefreshToken) {
 
 		RefreshToken reFreshToken = refreshTokenRepository.findByMember(member).map(refresh -> {

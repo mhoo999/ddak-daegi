@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -21,6 +22,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	@Transactional
 	public void updateProfile(AuthUser authUser, MemberUpdateRequest memberUpdateRequestDto) {
 		Member member = memberRepository.findById(authUser.getId())
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MEMBER));
@@ -35,6 +37,7 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
+	@Transactional
 	public void updatePassword(AuthUser authUser, MemberUpdatePasswordRequest memberUpdatePasswordRequest) {
 		Member member = memberRepository.findById(authUser.getId())
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MEMBER));
@@ -47,6 +50,7 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
+	@Transactional(readOnly = true)
 	public MemberResponse getMember(AuthUser authUser) {
 
 		return MemberResponse.from(memberRepository.findById(authUser.getId())

@@ -10,6 +10,7 @@ import com.example.ddakdaegi.global.common.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -18,6 +19,7 @@ public class AdminMemberService {
 
 	private final MemberRepository memberRepository;
 
+	@Transactional
 	public void updateMemberRole(AuthUser authUser, MemberUpdateRoleRequest memberUpdateRoleRequest) {
 		log.info("=== 사용자 권한 변경 시작 ===");
 		validateAdmin(authUser);

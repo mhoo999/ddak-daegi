@@ -68,6 +68,7 @@ public class AuthService {
 		return issueToken(member);
 	}
 
+	@Transactional
 	public TokenDto reissue(String refreshToken) {
 		Long memberId = Long.valueOf(jwtProvider.getSubject(refreshToken));
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
