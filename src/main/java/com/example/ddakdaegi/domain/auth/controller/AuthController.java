@@ -10,6 +10,7 @@ import com.example.ddakdaegi.domain.auth.dto.response.TokenDto;
 import com.example.ddakdaegi.domain.auth.service.AuthService;
 import com.example.ddakdaegi.global.common.response.Response;
 import com.example.ddakdaegi.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,16 @@ public class AuthController {
 		TokenDto tokenDto = authService.login(loginRequestDto);
 		cookieUtil.addCookie(response, REFRESH_NAME, tokenDto.getRefreshToken(),
 			REFRESH_EXP_TIME);
+
+		return Response.of(tokenDto.getAccessToken());
+	}
+
+	@PostMapping("/v1/auth/reissue")
+	public Response<String> reissue(HttpServletRequest request, HttpServletResponse response) {
+		String refreshToken = cookieUtil.getCookieValue(request, REFRESH_NAME);
+
+		TokenDto tokenDto = authService.reissue(refreshToken);
+		cookieUtil.addCookie(response, REFRESH_NAME, tokenDto.getRefreshToken(), REFRESH_EXP_TIME);
 
 		return Response.of(tokenDto.getAccessToken());
 	}
