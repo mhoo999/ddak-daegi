@@ -12,27 +12,31 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PromotionProduct extends Timestamped {
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name ="event_id")
-    private Promotion promotion;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+	@ManyToOne
+	@JoinColumn(name = "promotion_id")
+	private Promotion promotion;
 
-    @Column(nullable = false)
-    private Long stock;
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
 
-    @Column(nullable = false)
-    private Long purchaseLimit;
+	@Column(nullable = false)
+	private Long stock;
 
-    @Enumerated(EnumType.STRING)
-    private DiscountPolicy discountPolicy;
+	@Column(nullable = false)
+	private Long purchaseLimit;
 
-    @Column(nullable = false)
-    private Long price;
+	@Enumerated(EnumType.STRING)
+	private DiscountPolicy discountPolicy;
+
+	@Column(nullable = false)
+	private Long discountValue;
+
+	@Column(nullable = false)
+	private Long price;
 }
