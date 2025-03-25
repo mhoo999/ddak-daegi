@@ -1,5 +1,9 @@
 package com.example.ddakdaegi.global.util.jwt;
 
+import static com.example.ddakdaegi.global.util.jwt.JwtConstants.ACCESS_EXP_TIME;
+import static com.example.ddakdaegi.global.util.jwt.JwtConstants.JWT_KEY;
+import static com.example.ddakdaegi.global.util.jwt.JwtConstants.REFRESH_EXP_TIME;
+
 import com.example.ddakdaegi.domain.member.enums.UserRole;
 import com.example.ddakdaegi.global.common.exception.enums.ErrorCode;
 import io.jsonwebtoken.Claims;
@@ -19,11 +23,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-	private final JwtConstants jwtConstants;
-
 	public String generateAccessToken(Long userId, String email, UserRole userRole) {
 		try {
-			SecretKey key = Keys.hmacShaKeyFor(jwtConstants.getKey().getBytes(StandardCharsets.UTF_8));
+			SecretKey key = Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
 
 			Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
 			claims.put("email", email);
@@ -34,7 +36,7 @@ public class JwtProvider {
 				.setClaims(claims)
 				.setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
 				.setExpiration(
-					Date.from(ZonedDateTime.now().plusMinutes(jwtConstants.getACCESS_EXP_TIME()).toInstant()))
+					Date.from(ZonedDateTime.now().plusMinutes(ACCESS_EXP_TIME).toInstant()))
 				.signWith(key)
 				.compact();
 		} catch (Exception e) {
@@ -44,29 +46,16 @@ public class JwtProvider {
 
 	public String generateRefreshToken(Long userId) {
 		try {
-			SecretKey key = Keys.hmacShaKeyFor(jwtConstants.getKey().getBytes(StandardCharsets.UTF_8));
+			SecretKey key = Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
 
 			return Jwts.builder()
 				.setHeader(Map.of("typ", "refresh"))
 				.setSubject(String.valueOf(userId))
 				.setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
 				.setExpiration(
-					Date.from(ZonedDateTime.now().plusMinutes(jwtConstants.getREFRESH_EXP_TIME()).toInstant()))
+					Date.from(ZonedDateTime.now().plusMinutes(REFRESH_EXP_TIME).toInstant()))
 				.signWith(key)
 				.compact();
-		} catch (Exception e) {
-			throw new JwtException(e.getMessage());
-		}
-	}
-
-	public String validateToken(String token) {
-		try {
-			SecretKey key =
-				Keys.hmacShaKeyFor(jwtConstants.getKey().getBytes(StandardCharsets.UTF_8));
-
-			return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-		} catch (ExpiredJwtException expiredJwtException) {
-			throw new JwtException("expired token");
 		} catch (Exception e) {
 			throw new JwtException(e.getMessage());
 		}
@@ -79,7 +68,7 @@ public class JwtProvider {
 	public Claims extractClaims(String token) {
 		try {
 			SecretKey key =
-				Keys.hmacShaKeyFor(jwtConstants.getKey().getBytes(StandardCharsets.UTF_8));
+				Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
 			return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 		} catch (ExpiredJwtException expiredJwtException) {
 			throw new JwtException(ErrorCode.TOKEN_EXPIRED.getMessage());
