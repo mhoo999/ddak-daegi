@@ -1,7 +1,7 @@
 package com.example.ddakdaegi.domain.product.controller;
 
-import com.example.ddakdaegi.domain.product.dto.request.ProductRequestDto;
-import com.example.ddakdaegi.domain.product.dto.response.ProductResponseDto;
+import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
+import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,13 +27,13 @@ public class ProductController {
 		Product(상품) 등록 메서드
 	*/
 	@PostMapping("/v1/products")
-	public ResponseEntity<ProductResponseDto> saveProduct(
+	public ResponseEntity<ProductResponse> saveProduct(
 		//@PathVariable Long memberId,
-		@RequestBody ProductRequestDto productRequestDto
+		@RequestBody ProductRequest productRequest
 	) {
 
-		ProductResponseDto productResponseDto = productService.saveProduct(/*memberId,*/ productRequestDto);
-		return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
+		ProductResponse productResponse = productService.saveProduct(/*memberId,*/ productRequest);
+		return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
 
 	}
 
@@ -42,12 +42,12 @@ public class ProductController {
 		Product(상품) 다건 조회 메서드
 	*/
 	@GetMapping("/v1/products")
-	public ResponseEntity<Page<ProductResponseDto>> findAllProduct(
+	public ResponseEntity<Page<ProductResponse>> findAllProduct(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "5") int size
 	) {
 
-		Page<ProductResponseDto> productResponseDtoPage = productService.findAllProduct(page, size);
+		Page<ProductResponse> productResponseDtoPage = productService.findAllProduct(page, size);
 
 		return new ResponseEntity<>(productResponseDtoPage, HttpStatus.OK);
 

@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ProductRequestDto {
+public class ProductRequest {
 
 	private final String description;
 

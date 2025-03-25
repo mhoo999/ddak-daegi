@@ -1,7 +1,7 @@
 package com.example.ddakdaegi.domain.product.service;
 
-import com.example.ddakdaegi.domain.product.dto.request.ProductRequestDto;
-import com.example.ddakdaegi.domain.product.dto.response.ProductResponseDto;
+import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
+import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import java.util.List;
@@ -23,15 +23,15 @@ public class ProductService {
 		상품 조회 메서드
 	*/
 	@Transactional(readOnly = true)
-	public Page<ProductResponseDto> findAllProduct(int page, int size) {
+	public Page<ProductResponse> findAllProduct(int page, int size) {
 
 		int adjustedPage = (page > 0) ? page - 1 : 0;
 		//Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(updated_at).descending());
 		Pageable pageable = PageRequest.of(adjustedPage, size);
 		Page<Product> postPage = productRepository.findAll(pageable);
 
-		List<ProductResponseDto> dtoList = postPage.getContent().stream()
-			.map(ProductResponseDto::toDto)
+		List<ProductResponse> dtoList = postPage.getContent().stream()
+			.map(ProductResponse::toDto)
 			.toList();
 
 		return new PageImpl<>(dtoList, pageable, postPage.getTotalElements());
@@ -42,21 +42,21 @@ public class ProductService {
 		상품 등록 메서드
 	*/
 	@Transactional
-	public ProductResponseDto saveProduct(/*Long memberId,*/ ProductRequestDto productRequestDto) {
+	public ProductResponse saveProduct(/*Long memberId,*/ ProductRequest productRequest) {
 
 		//Member member = memberRepository.findMemberById(memberId);
 
 		Product product = new Product(
-			productRequestDto.getDescription(),
-			productRequestDto.getName(),
-			productRequestDto.getImage(),
-			productRequestDto.getStock(),
-			productRequestDto.getPrice()
+			productRequest.getDescription(),
+			productRequest.getName(),
+			productRequest.getImage(),
+			productRequest.getStock(),
+			productRequest.getPrice()
 		);
 
 		productRepository.save(product);
 
-		return new ProductResponseDto(product);
+		return new ProductResponse(product);
 	}
 
 

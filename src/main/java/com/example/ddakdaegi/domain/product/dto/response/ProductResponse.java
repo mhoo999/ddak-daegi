@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ProductResponseDto {
+public class ProductResponse {
 
 	private final Long id;
 
@@ -28,7 +28,7 @@ public class ProductResponseDto {
 
 
 	// Product 클래스를 받는 생성자
-	public ProductResponseDto(Product product) {
+	public ProductResponse(Product product) {
 		this.id = product.getId();
 		this.member = product.getMember();
 		this.description = product.getDescription();
@@ -41,8 +41,8 @@ public class ProductResponseDto {
 
 
 	// 페이지네이션 다건조회를 toDto 메서드
-	public static ProductResponseDto toDto(Product product) {
-		return new ProductResponseDto(
+	public static ProductResponse toDto(Product product) {
+		return new ProductResponse(
 			product.getId(),
 			product.getMember(),
 			product.getDescription(),
