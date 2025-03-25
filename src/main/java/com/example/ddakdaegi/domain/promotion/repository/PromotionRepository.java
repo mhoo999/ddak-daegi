@@ -1,4 +1,4 @@
-﻿package com.example.ddakdaegi.domain.promotion.repository;
+package com.example.ddakdaegi.domain.promotion.repository;
 
 import com.example.ddakdaegi.domain.promotion.entity.Promotion;
 import org.springframework.data.jpa.repository.JpaRepository;
