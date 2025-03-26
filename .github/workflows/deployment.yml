@@ -56,6 +56,8 @@ jobs:
             ${{ secrets.APP_ENV }}
             EOF
             
+            sudo chmod 666 /var/run/docker.sock
+            
             echo "도커 이미지 pull"
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
             
