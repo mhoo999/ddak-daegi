@@ -4,6 +4,7 @@ import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.service.ProductService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
+import com.example.ddakdaegi.global.common.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -33,11 +34,9 @@ public class ProductController {
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ProductRequest productRequest
 	) {
-
 		ProductResponse productResponse = productService.saveProduct(authUser, productRequest);
 
 		return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-
 	}
 
 
@@ -45,16 +44,14 @@ public class ProductController {
 		Product(상품) 다건 조회 메서드
 	*/
 	@GetMapping("/v1/products")
-	public ResponseEntity<Page<ProductResponse>> findAllProduct(
+	public Response<Page<ProductResponse>> findAllProduct(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "5") int size
 	) {
-
 		Page<ProductResponse> productResponseDtoPage = productService.findAllProduct(page, size);
 
-		return new ResponseEntity<>(productResponseDtoPage, HttpStatus.OK);
-
+		//return new ResponseEntity<>(productResponseDtoPage, HttpStatus.OK);
+		return Response.of(productResponseDtoPage);
 	}
-
 
 }
