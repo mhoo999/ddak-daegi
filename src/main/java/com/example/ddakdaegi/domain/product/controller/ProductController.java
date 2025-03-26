@@ -7,6 +7,8 @@ import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,10 +47,13 @@ public class ProductController {
 	*/
 	@GetMapping("/v1/products")
 	public Response<Page<ProductResponse>> findAllProduct(
+		/* old code
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "5") int size
+		*/
+		@PageableDefault(page = 0, size = 5)Pageable pageable // 기본 page, size 크기 설정 파라미터
 	) {
-		Page<ProductResponse> productResponseDtoPage = productService.findAllProduct(page, size);
+		Page<ProductResponse> productResponseDtoPage = productService.findAllProduct(pageable);
 
 		//return new ResponseEntity<>(productResponseDtoPage, HttpStatus.OK);
 		return Response.of(productResponseDtoPage);

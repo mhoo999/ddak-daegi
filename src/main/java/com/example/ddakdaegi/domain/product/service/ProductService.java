@@ -25,11 +25,14 @@ public class ProductService {
 		상품 조회 메서드
 	*/
 	@Transactional(readOnly = true)
-	public Page<ProductResponse> findAllProduct(int page, int size) {
+	public Page<ProductResponse> findAllProduct(Pageable pageable) {
 
+		/* old code
 		int adjustedPage = (page > 0) ? page - 1 : 0;
-		//Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(updated_at).descending());
+		Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(updated_at).descending());
 		Pageable pageable = PageRequest.of(adjustedPage, size);
+		*/
+
 		Page<Product> postPage = productRepository.findAll(pageable);
 
 		List<ProductResponse> dtoList = postPage.getContent().stream()
