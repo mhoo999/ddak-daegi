@@ -59,10 +59,10 @@ jobs:
             sudo chmod 666 /var/run/docker.sock
             
             echo "도커 이미지 pull"
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            sudo docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
             
             sudo docker stop app || true
             sudo docker rm app || true
             
-            sudo docker run -d --env-file .env -e SPRING_PROFILES_ACTIVE=prod --name app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            sudo docker run -d --env-file .env -e SPRING_PROFILES_ACTIVE=prod --name app -p 8080:8080 ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
             
