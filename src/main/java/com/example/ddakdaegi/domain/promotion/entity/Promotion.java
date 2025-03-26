@@ -76,4 +76,9 @@ public class Promotion extends Timestamped {
     public void terminate() {
         this.isActive = false;
     }
+
+    public void setActive(boolean activate) {
+        this.isActive = activate;
+    }
+
 }

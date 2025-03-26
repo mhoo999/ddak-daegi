@@ -5,6 +5,7 @@ import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.*;
 import com.example.ddakdaegi.domain.image.entity.Image;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.entity.Product;
+import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionProductRequest;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionRequest;
 import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequest;
@@ -16,6 +17,7 @@ import com.example.ddakdaegi.domain.promotion.repository.PromotionProductReposit
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.exception.BaseException;
+import com.example.ddakdaegi.global.scheduler.PromotionSchedulerService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -29,8 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PromotionService {
 
 	private final PromotionRepository promotionRepository;
-//	private final ProductRepository productRepository;
+	private final ProductRepository productRepository;
 	private final PromotionProductRepository promotionProductRepository;
+	private final PromotionSchedulerService schedulerService;
 
 	@Transactional
 	public PromotionResponse createPromotion(AuthUser authUser, CreatePromotionRequest request) {
@@ -40,12 +43,18 @@ public class PromotionService {
 
 		Image newBanner = null;
 
-		Promotion promotion = Promotion.create(request.getName(), newBanner, request.getStartDate(), request.getEndDate());
+		Promotion promotion = Promotion.create(
+			request.getName(),
+			newBanner,
+			request.getStartDate(),
+			request.getEndDate()
+		);
+
 		promotionRepository.save(promotion);
 
 		for (CreatePromotionProductRequest ppRequest : request.getPromotionProducts()) {
-//			Product product = productRepository.findById(ppRequest.getProductId()).orElseThrow(() -> new BaseException(NOT_FOUND_PRODUCT));
-			Product product = null;
+			Product product = productRepository.findById(ppRequest.getProductId())
+				.orElseThrow(() -> new BaseException(NOT_FOUND_PRODUCT));
 
 			if (product.getSoldOut()) {
 				throw new BaseException(SOLD_OUT);
@@ -73,6 +82,9 @@ public class PromotionService {
 
 			promotionProductRepository.save(promotionProduct);
 		}
+
+		schedulerService.schedulePromotion(promotion.getId(), promotion.getStartTime(), true);   // 활성화 예약
+		schedulerService.schedulePromotion(promotion.getId(), promotion.getEndTime(), false);    // 비활성화 예약
 
 		return new PromotionResponse(
 			promotion.getId(),
