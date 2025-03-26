@@ -30,13 +30,13 @@ public class ProductController {
 		Product(상품) 등록 메서드
 	*/
 	@PostMapping("/v1/products")
-	public ResponseEntity<ProductResponse> saveProduct(
+	public Response<ProductResponse> saveProduct( //public ResponseEntity<ProductResponse> saveProduct
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ProductRequest productRequest
 	) {
 		ProductResponse productResponse = productService.saveProduct(authUser, productRequest);
 
-		return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+		return Response.of(productResponse);
 	}
 
 
