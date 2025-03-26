@@ -36,4 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-application-local.properties
+### application.properties ###
+src/main/resources/**
+src/test/resources/**
