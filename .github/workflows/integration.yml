@@ -1,0 +1,51 @@
+name: 테스트 및 빌드
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest # 우분투 최신 버전에서
+
+    steps:
+      - uses: actions/checkout@v4 # 현재 브랜치의 코드를 actions 서버에 올리기
+      - name: JAVA 17 세팅
+        uses: actions/setup-java@v4 # 자바 세팅 actions
+        with:
+          java-version: '17' # 17버전
+          distribution: 'temurin' # JDK 배포판 temurin이 대중적
+
+      - name: Gradle 세팅
+        uses: gradle/actions/setup-gradle@v4 # 버전 태그를 사용하는 방식. 최신 v4.x.x 릴리스
+
+      - name: Build with Gradle Wrapper
+        run: chmod +x ./gradlew && ./gradlew build
+
+  review-bot:
+    runs-on: ubuntu-latest
+    needs: test-build
+
+    steps:
+      - uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PROMPT: |
+            당신은 시니어 Java 백엔드 개발자입니다.
+            아래 diff 내용을 리뷰하고 다음 항목을 지적하세요:
+            - 잠재적인 버그나 예외 가능성
+            - 잘못된 로직, 성능 이슈
+            - 읽기 어려운 코드 또는 리팩토링 포인트
+            - Clean Code / SOLID 원칙 위반
+            문제가 없다고 판단되면 그 이유도 함께 서술하세요.
+          LANGUAGE: Korean
+          MODEL: gpt-3.5-turbo
+          max_tokens: 2000
+
+
+
