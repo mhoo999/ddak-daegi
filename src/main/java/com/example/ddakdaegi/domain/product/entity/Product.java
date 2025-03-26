@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "product")
@@ -42,8 +43,14 @@ public class Product extends Timestamped {
 	@Column(nullable = false)
 	private Long price;
 
+	/*
+		soft delete 를 위한 변수
+		Product 어트리뷰트를 삭제하는 순간 날짜 시간이 대입을 하고
+		데이터가 DB에 논리적으로 존재하지 않는다고 취급
+	*/
 	@Column
-	private LocalDateTime deletedAt; // soft delete 를 위한 변수
+	@ColumnDefault("null") // 기본값 null -> 데이터가 DB에 논리적으로 존재
+	private LocalDateTime deletedAt;
 
 	// 생성자
 	public Product(
@@ -62,6 +69,7 @@ public class Product extends Timestamped {
 		this.price = price;
 
 		this.soldOut = false; // 기본 값
+		//this.deletedAt = null;
 	}
 
 }

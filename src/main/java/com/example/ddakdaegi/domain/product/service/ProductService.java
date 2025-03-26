@@ -27,13 +27,7 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Page<ProductResponse> findAllProduct(Pageable pageable) {
 
-		/* old code
-		int adjustedPage = (page > 0) ? page - 1 : 0;
-		Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(updated_at).descending());
-		Pageable pageable = PageRequest.of(adjustedPage, size);
-		*/
-
-		Page<Product> postPage = productRepository.findAll(pageable);
+		Page<Product> postPage = productRepository.findByDeletedAtNull(pageable);
 
 		List<ProductResponse> dtoList = postPage.getContent().stream()
 			.map(ProductResponse::toDto)
