@@ -62,8 +62,9 @@ public class ProductController {
 	@GetMapping("/v1/products/delete/{productId}")
 	public Response<ProductResponse> softDeleteProduct(@PathVariable("productId") Long productId) {
 
-		//ProductResponse productResponse = productService
-		return null;
+		ProductResponse productResponse = productService.softDeleteProduct(productId);
+
+		return Response.of(productResponse);
 	}
 
 
@@ -71,10 +72,11 @@ public class ProductController {
 		상품 단건 조회
 	*/
 	@GetMapping("/v1/products/{productId}")
-	public Response<ProductResponse> findProduct(@PathVariable("productId") Long productId){
-		ProductResponse productResponse = productService.findProductById(productId);
-		return Response.of(productResponse);
+	public Response<ProductResponse> findProduct(@PathVariable("productId") Long productId) {
 
+		ProductResponse productResponse = productService.findProductById(productId);
+
+		return Response.of(productResponse);
 	}
 
 
@@ -88,8 +90,6 @@ public class ProductController {
 	/*
 		상품 정보 수정
 	*/
-
-
 
 
 }

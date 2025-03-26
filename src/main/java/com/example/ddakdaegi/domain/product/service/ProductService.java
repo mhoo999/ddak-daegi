@@ -9,6 +9,7 @@ import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.exception.BaseException;
 import com.example.ddakdaegi.global.common.exception.enums.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,10 +69,28 @@ public class ProductService {
 	*/
 	@Transactional
 	public ProductResponse findProductById(Long id) {
+
 		Product product = productRepository.findById(id)
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+
 		return new ProductResponse(product);
 
+	}
+
+	/*
+		상품 소프트딜리트 메서드
+	*/
+	@Transactional
+	public ProductResponse softDeleteProduct(Long id) {
+
+		Product product = productRepository.findById(id)
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+
+		product.setDeletedAt(LocalDateTime.now()); // 소프트 딜리트 변수에 현재시간 대입 -> null 이 아니므로 더이상 DB에 레코드가 논리적으로 존재하지 않음
+
+		productRepository.save(product);
+
+		return new ProductResponse(product);
 	}
 
 }
