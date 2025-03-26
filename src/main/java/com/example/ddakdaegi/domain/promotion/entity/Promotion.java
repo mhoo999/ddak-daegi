@@ -72,4 +72,8 @@ public class Promotion extends Timestamped {
                 && !LocalDateTime.now().isAfter(this.endTime);
         }
     }
+
+    public void terminate() {
+        this.isActive = false;
+    }
 }

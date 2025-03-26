@@ -3,6 +3,7 @@ package com.example.ddakdaegi.domain.promotion.service;
 import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.*;
 
 import com.example.ddakdaegi.domain.image.entity.Image;
+import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionProductRequest;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionRequest;
@@ -13,6 +14,7 @@ import com.example.ddakdaegi.domain.promotion.entity.PromotionProduct;
 import com.example.ddakdaegi.domain.promotion.enums.DiscountPolicy;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionProductRepository;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
+import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.exception.BaseException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,7 +33,7 @@ public class PromotionService {
 	private final PromotionProductRepository promotionProductRepository;
 
 	@Transactional
-	public PromotionResponse createPromotion(CreatePromotionRequest request) {
+	public PromotionResponse createPromotion(AuthUser authUser, CreatePromotionRequest request) {
 		if (request.getStartDate().isAfter(request.getEndDate())) {
 			throw new BaseException(INVALID_DATE_RANGE);
 		}
@@ -157,5 +159,11 @@ public class PromotionService {
 		}
 
 		return result.setScale(0, RoundingMode.HALF_UP).longValue();
+	}
+
+	@Transactional
+	public void terminatePromotion(Long promotionId) {
+		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
+		promotion.terminate();
 	}
 }
