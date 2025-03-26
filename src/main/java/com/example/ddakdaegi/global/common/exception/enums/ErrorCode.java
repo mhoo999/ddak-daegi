@@ -20,6 +20,7 @@ public enum ErrorCode {
 	// order 예외처리
 
 	// product 예외처리
+	//NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, ""),
 
 	// promotion 예외처리
 	NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다."),

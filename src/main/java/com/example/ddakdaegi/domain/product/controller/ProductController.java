@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,7 @@ public class ProductController {
 		Product(상품) 등록 메서드
 	*/
 	@PostMapping("/v1/products")
-	public Response<ProductResponse> saveProduct( //public ResponseEntity<ProductResponse> saveProduct
+	public Response<ProductResponse> saveProduct(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ProductRequest productRequest
 	) {
@@ -47,16 +48,48 @@ public class ProductController {
 	*/
 	@GetMapping("/v1/products")
 	public Response<Page<ProductResponse>> findAllProduct(
-		/* old code
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "5") int size
-		*/
-		@PageableDefault(page = 0, size = 5)Pageable pageable // 기본 page, size 크기 설정 파라미터
+		@PageableDefault(page = 0, size = 5) Pageable pageable // 기본 page, size 크기 설정 파라미터
 	) {
 		Page<ProductResponse> productResponseDtoPage = productService.findAllProduct(pageable);
 
-		//return new ResponseEntity<>(productResponseDtoPage, HttpStatus.OK);
 		return Response.of(productResponseDtoPage);
 	}
+
+
+	/*
+		상품 삭제 소프트딜리트 메서드
+	*/
+	@GetMapping("/v1/products/delete/{productId}")
+	public Response<ProductResponse> softDeleteProduct(@PathVariable("productId") Long productId) {
+
+		//ProductResponse productResponse = productService
+		return null;
+	}
+
+
+	/*
+		상품 단건 조회
+	*/
+	@GetMapping("/v1/products/{productId}")
+	public Response<ProductResponse> findProduct(@PathVariable("productId") Long productId){
+		ProductResponse productResponse = productService.findProductById(productId);
+		return Response.of(productResponse);
+
+	}
+
+
+	/*
+		상품 판매상태 변경
+	*/
+
+
+
+
+	/*
+		상품 정보 수정
+	*/
+
+
+
 
 }

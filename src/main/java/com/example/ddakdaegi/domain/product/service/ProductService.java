@@ -6,6 +6,9 @@ import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
+import com.example.ddakdaegi.global.common.exception.BaseException;
+import com.example.ddakdaegi.global.common.exception.enums.ErrorCode;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -59,5 +62,16 @@ public class ProductService {
 		return new ProductResponse(product);
 	}
 
+
+	/*
+		상품 단건 조회 메서드
+	*/
+	@Transactional
+	public ProductResponse findProductById(Long id) {
+		Product product = productRepository.findById(id)
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+		return new ProductResponse(product);
+
+	}
 
 }
