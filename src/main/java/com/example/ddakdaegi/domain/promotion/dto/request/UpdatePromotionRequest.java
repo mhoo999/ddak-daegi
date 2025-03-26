@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 public class UpdatePromotionRequest {
 
 	private String name;
-	private String banner_image;
-	private LocalDateTime start_date;
-	private LocalDateTime end_date;
+	private String bannerImage;
+	private LocalDateTime startDate;
+	private LocalDateTime endDate;
 
-	public UpdatePromotionRequest(String name, String banner_image, LocalDateTime start_date,
-		LocalDateTime end_date) {
+	public UpdatePromotionRequest(String name, String bannerImage, LocalDateTime startDate,
+		LocalDateTime endDate) {
 		this.name = name;
-		this.banner_image = banner_image;
-		this.start_date = start_date;
-		this.end_date = end_date;
+		this.bannerImage = bannerImage;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 }
