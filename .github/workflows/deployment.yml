@@ -29,6 +29,38 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_USERNAME }}/ryu-actions-app:latest
-            ${{ vars.DOCKERHUB_USERNAME }}/ryu-actions-app:${{ github.sha }}
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ github.sha }}
+
+      - name: ec2 배포
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Docker 설치여부 확인"
+            if ! command -v docker &> /dev/null; then
+              echo "Docker 미설치 상태... 설치시작"
+              sudo apt-get update -y
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker  
+              echo "Docker 설치 완료"
+            else 
+              echo "Docker 설치 상태"
+            fi
+            
+            echo "📝 .env 파일 생성"
+            cat <<EOF > .env
+            ${{ secrets.APP_ENV }}
+            EOF
+            
+            echo "도커 이미지 pull"
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            
+            sudo docker stop app || true
+            sudo docker rm app || true
+            
+            sudo docker run -d --env-file .env -e SPRING_PROFILES_ACTIVE=prod --name app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
             
