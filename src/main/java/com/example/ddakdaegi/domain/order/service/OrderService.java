@@ -85,4 +85,24 @@ public class OrderService {
 	public Page<OrderResponse> getAllOrders(AuthUser authUser, Pageable pageable) {
 		return orderRepository.findOrders(authUser.getId(), pageable);
 	}
+
+	@Transactional
+	public void cancelOrder(Long orderId, AuthUser authUser) {
+		Order getOrder = orderRepository.findByOrderIdAndMemberId(orderId, authUser.getId())
+			.orElseThrow(() -> new RuntimeException("사용자의 주문을 찾을 수 없음"));
+
+		List<OrderPromotionProduct> getOrderPromotionProduct = orderPromotionProductRepository.findByOrderId(orderId);
+
+		for (OrderPromotionProduct orderPromotionProduct : getOrderPromotionProduct) {
+			PromotionProduct promotionProduct = orderPromotionProduct.getPromotionProduct();
+
+			if (promotionProduct.getPromotion().getIsActive()) {
+				promotionProduct.revertStock(orderPromotionProduct.getQuantity());
+			} else {
+				promotionProduct.getProduct().revertStock(orderPromotionProduct.getQuantity());
+			}
+		}
+
+		getOrder.cancelOrder();
+	}
 }

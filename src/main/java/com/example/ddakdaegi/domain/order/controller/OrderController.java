@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,5 +50,10 @@ public class OrderController {
 		@PageableDefault Pageable pageable
 	) {
 		return Response.of(orderService.getAllOrders(authUser, pageable));
+	}
+
+	@PatchMapping("/v1/orders/{orderId}")
+	public void cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal AuthUser authUser) {
+		orderService.cancelOrder(orderId, authUser);
 	}
 }
