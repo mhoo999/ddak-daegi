@@ -14,5 +14,6 @@ public class UpdatePromotionRequest {
 	private String bannerImage;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
+	private Boolean isTerminate;
 
 }

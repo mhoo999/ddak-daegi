@@ -14,14 +14,15 @@ import com.example.ddakdaegi.domain.promotion.entity.PromotionProduct;
 import com.example.ddakdaegi.domain.promotion.enums.DiscountPolicy;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionProductRepository;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
-import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.exception.BaseException;
 import com.example.ddakdaegi.global.scheduler.PromotionSchedulerService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class PromotionService {
 	private final PromotionSchedulerService schedulerService;
 
 	@Transactional
-	public PromotionResponse createPromotion(AuthUser authUser, CreatePromotionRequest request) {
+	public PromotionResponse createPromotion(CreatePromotionRequest request) {
 		if (request.getStartDate().isAfter(request.getEndDate())) {
 			throw new BaseException(INVALID_DATE_RANGE);
 		}
@@ -81,14 +82,14 @@ public class PromotionService {
 			promotionProductRepository.save(promotionProduct);
 		}
 
-		schedulerService.schedulePromotion(promotion.getId(), promotion.getStartTime(), true);   // 활성화 예약
-		schedulerService.schedulePromotion(promotion.getId(), promotion.getEndTime(), false);    // 비활성화 예약
+		schedulerService.schedulePromotion(promotion.getId(), promotion.getStartDate(), true);   // 활성화 예약
+		schedulerService.schedulePromotion(promotion.getId(), promotion.getEndDate(), false);    // 비활성화 예약
 
 		return new PromotionResponse(
 			promotion.getId(),
 			promotion.getName(),
-			promotion.getStartTime(),
-			promotion.getEndTime(),
+			promotion.getStartDate(),
+			promotion.getEndDate(),
 			promotion.getIsActive(),
 			promotion.getCreatedAt(),
 			promotion.getUpdatedAt()
@@ -96,12 +97,14 @@ public class PromotionService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<PromotionResponse> getPromotions() {
-		List<Promotion> promotions = promotionRepository.findAll();
+	public Page<PromotionResponse> findAllPromotion(Pageable pageable) {
+		Page<Promotion> postPage = promotionRepository.findAll(pageable);
 
-		return promotions.stream()
-			.map(PromotionResponse::from)
-			.collect(Collectors.toList());
+		List<PromotionResponse> dtoList = postPage.getContent().stream()
+			.map(PromotionResponse::toDto)
+			.toList();
+
+		return new PageImpl<>(dtoList, pageable, postPage.getTotalElements());
 	}
 
 	@Transactional(readOnly = true)
@@ -111,8 +114,8 @@ public class PromotionService {
 		return new PromotionResponse(
 			promotion.getId(),
 			promotion.getName(),
-			promotion.getStartTime(),
-			promotion.getEndTime(),
+			promotion.getStartDate(),
+			promotion.getEndDate(),
 			promotion.getIsActive(),
 			promotion.getCreatedAt(),
 			promotion.getUpdatedAt()
@@ -132,14 +135,15 @@ public class PromotionService {
 			request.getName(),
 			newBanner,
 			request.getStartDate(),
-			request.getEndDate()
+			request.getEndDate(),
+			request.getIsTerminate()
 		);
 
 		return new PromotionResponse(
 			promotion.getId(),
 			promotion.getName(),
-			promotion.getStartTime(),
-			promotion.getEndTime(),
+			promotion.getStartDate(),
+			promotion.getEndDate(),
 			promotion.getIsActive(),
 			promotion.getCreatedAt(),
 			promotion.getUpdatedAt()
@@ -169,11 +173,5 @@ public class PromotionService {
 		}
 
 		return result.setScale(0, RoundingMode.HALF_UP).longValue();
-	}
-
-	@Transactional
-	public void terminatePromotion(Long promotionId) {
-		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
-		promotion.terminate();
 	}
 }

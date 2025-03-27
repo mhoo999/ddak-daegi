@@ -20,15 +20,15 @@ public class Promotion extends Timestamped {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "banner_id")
     private Image banner;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalDateTime endDate;
 
     @Column(nullable = false)
     private Boolean isActive;
@@ -36,12 +36,12 @@ public class Promotion extends Timestamped {
     public Promotion(String name, Image banner, LocalDateTime startTime, LocalDateTime endTime, Boolean isActive) {
         this.name = name;
         this.banner = banner;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startTime;
+        this.endDate = endTime;
         this.isActive = isActive;
     }
 
-    public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate) {
+    public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate, boolean isTerminate) {
         if (name != null) {
             this.name = name;
         }
@@ -49,15 +49,14 @@ public class Promotion extends Timestamped {
             this.banner = newBannerImage;
         }
         if (startDate != null) {
-            this.startTime = startDate;
+            this.startDate = startDate;
         }
         if (endDate != null) {
-            this.endTime = endDate;
+            this.endDate = endDate;
         }
-    }
-
-    public void terminate() {
-        this.isActive = false;
+        if (isTerminate) {
+            this.isActive = false;
+        }
     }
 
     public void setActive(boolean activate) {
