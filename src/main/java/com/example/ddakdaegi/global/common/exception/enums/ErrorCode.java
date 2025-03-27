@@ -20,7 +20,8 @@ public enum ErrorCode {
 	// order 예외처리
 
 	// product 예외처리
-	//NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, ""),
+	SOLD_OUT_SAME_FLAG(HttpStatus.BAD_REQUEST, "상품판매 상태가 요청하신 값으로 이미 설정되어 있습니다."),
+	// NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다.")
 
 	// promotion 예외처리
 	NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다."),

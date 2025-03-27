@@ -1,7 +1,9 @@
 package com.example.ddakdaegi.domain.product.controller;
 
 import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
+import com.example.ddakdaegi.domain.product.dto.request.ProductSoldOutSetRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
+import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.service.ProductService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.response.Response;
@@ -83,6 +85,15 @@ public class ProductController {
 	/*
 		상품 판매상태 변경
 	*/
+	@PostMapping("/v1/products/soldout/{productId}")
+	public Response<ProductResponse> setSoldOut(
+		@PathVariable("productId") Long productId,
+		@RequestBody ProductSoldOutSetRequest productSoldOutSetRequest
+	) {
+		ProductResponse productResponse = productService.setSoldOut(productId, productSoldOutSetRequest.isSoldOut());
+
+		return Response.of(productResponse);
+	}
 
 
 

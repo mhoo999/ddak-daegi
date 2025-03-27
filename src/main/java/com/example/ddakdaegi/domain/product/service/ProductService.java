@@ -31,13 +31,13 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Page<ProductResponse> findAllProduct(Pageable pageable) {
 
-		Page<Product> postPage = productRepository.findByDeletedAtNull(pageable);
+		Page<Product> productPage = productRepository.findByDeletedAtNull(pageable);
 
-		List<ProductResponse> dtoList = postPage.getContent().stream()
+		List<ProductResponse> dtoList = productPage.getContent().stream()
 			.map(ProductResponse::toDto)
 			.toList();
 
-		return new PageImpl<>(dtoList, pageable, postPage.getTotalElements());
+		return new PageImpl<>(dtoList, pageable, productPage.getTotalElements());
 	}
 
 
@@ -92,5 +92,30 @@ public class ProductService {
 
 		return new ProductResponse(product);
 	}
+
+
+	/*
+		상품 판매상태 변경 메서드
+	*/
+	@Transactional
+	public ProductResponse setSoldOut(Long productId, boolean soldOut){
+
+		Product product = productRepository.findById(productId)
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+
+		// Product 레코드 soldOut 의 저장된 값이 요청한 값과 동일한 경우 -> 불필요한 Repository.save 매서드 호출 방지
+		if(product.getSoldOut() == soldOut){
+			throw new BaseException(ErrorCode.SOLD_OUT_SAME_FLAG);
+		}
+
+		product.setSoldOut(soldOut);
+		productRepository.save(product);
+
+		return new ProductResponse(product);
+
+	}
+
+
+
 
 }
