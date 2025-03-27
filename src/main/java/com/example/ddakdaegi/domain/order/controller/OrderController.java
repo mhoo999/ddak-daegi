@@ -35,8 +35,8 @@ public class OrderController {
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody CreateOrderRequest request
 	) {
-		StockResponse stockResponse = stockService.decreaseStockAndCalculateTotalPrice(
-			request.getPromotionProductRequests());
+		StockResponse stockResponse =
+			stockService.decreaseStockAndCalculateTotalPrice(request.getPromotionProductRequests());
 
 		OrderResponse orderResponse =
 			orderService.createOrder(authUser, stockResponse);
@@ -44,8 +44,10 @@ public class OrderController {
 	}
 
 	@GetMapping("/v1/orders/{orderId}")
-	public Response<OrderDetailResponse> getOrder(@PathVariable Long orderId,
-		@AuthenticationPrincipal AuthUser authUser) {
+	public Response<OrderDetailResponse> getOrder(
+		@PathVariable Long orderId,
+		@AuthenticationPrincipal AuthUser authUser
+	) {
 		return Response.of(orderService.getOrder(orderId, authUser));
 	}
 

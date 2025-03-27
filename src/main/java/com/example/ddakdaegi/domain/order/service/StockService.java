@@ -21,6 +21,10 @@ public class StockService {
 
 	@Transactional
 	public StockResponse decreaseStockAndCalculateTotalPrice(List<PromotionProductRequest> promotionProductRequests) {
+		if (promotionProductRequests.isEmpty()) {
+			throw new RuntimeException("잘못된 요청입니다");
+		}
+
 		List<Long> promotionProductIds = promotionProductRequests.stream()
 			.map(PromotionProductRequest::getPromotionProductId)
 			.toList();
@@ -30,6 +34,10 @@ public class StockService {
 				Collectors.toMap(PromotionProductRequest::getPromotionProductId, PromotionProductRequest::getQuantity));
 
 		List<PromotionProduct> promotionProducts = promotionProductRepository.findAllByIdIn(promotionProductIds);
+
+		if (promotionProducts.isEmpty()) {
+			throw new RuntimeException("이벤트 상품을 찾을 수 없습니다");
+		}
 
 		long totalPrice = 0L;
 
