@@ -1,5 +1,7 @@
 package com.example.ddakdaegi.domain.product.service;
 
+import com.example.ddakdaegi.domain.image.entity.Image;
+import com.example.ddakdaegi.domain.image.repository.ImageRepository;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
 	private final ProductRepository productRepository;
+	private final ImageRepository imageRepository;
 
 	/*
 		상품 조회 메서드
@@ -53,7 +56,8 @@ public class ProductService {
 			member,
 			productRequest.getDescription(),
 			productRequest.getName(),
-			productRequest.getImage(),
+			imageRepository.findById(productRequest.getImage())
+				.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE)),
 			productRequest.getStock(),
 			productRequest.getPrice()
 		);
@@ -144,7 +148,8 @@ public class ProductService {
 		// 상품 수정
 		product.setDescription(productRequest.getDescription());
 		product.setName(productRequest.getName());
-		product.setImage(productRequest.getImage());
+		product.setImage(imageRepository.findById(productRequest.getImage())
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE)));
 		product.setStock(productRequest.getStock());
 		product.setPrice(productRequest.getPrice());
 

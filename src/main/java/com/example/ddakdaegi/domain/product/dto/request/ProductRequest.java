@@ -14,7 +14,7 @@ public class ProductRequest {
 
 	private final String name;
 
-	private final Image image;
+	private final Long image;
 
 	private final Long stock;
 

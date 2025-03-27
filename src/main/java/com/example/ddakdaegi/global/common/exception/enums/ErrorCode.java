@@ -20,6 +20,7 @@ public enum ErrorCode {
 	// image 예외 처리
 	INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, "이미지 파일(jpg, png)만 업로드할 수 있습니다."),
 	FAIL_UPLOAD_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."),
+	NOT_FOUND_IMAGE(HttpStatus.BAD_REQUEST, "존재하지 않는 이미지 입니다."),
 
 	// order 예외처리
 
