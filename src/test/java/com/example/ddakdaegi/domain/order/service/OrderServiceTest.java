@@ -6,7 +6,7 @@ import com.example.ddakdaegi.domain.image.enums.ImageType;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.member.enums.UserRole;
 import com.example.ddakdaegi.domain.member.repository.MemberRepository;
-import com.example.ddakdaegi.domain.order.dto.request.PromotionProductDto;
+import com.example.ddakdaegi.domain.order.dto.request.PromotionProductRequest;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.domain.promotion.entity.Promotion;
@@ -93,9 +93,7 @@ public class OrderServiceTest {
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failedCount = new AtomicInteger(0);
 
-		List<PromotionProductDto> productDtos = List.of(
-			new PromotionProductDto(promotionProduct.getId(), promotionProduct.getPrice(), 1L)
-		);
+		List<PromotionProductRequest> productDtos = List.of(new PromotionProductRequest(promotionProduct.getId(), 1L));
 
 		for (int i = 0; i < threadCount; i++) {
 			executorService.execute(() -> {

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateOrderRequest {
 
-	private List<PromotionProductDto> promotionProductDtos;
+	private List<PromotionProductRequest> promotionProductRequests;
 
 }
