@@ -8,5 +8,5 @@ public interface ImageService {
 
 	ImageResponse saveImage(MultipartFile file, String type);
 
-	String upload(MultipartFile file, String type);
+	void deleteImage(Long imageId);
 }

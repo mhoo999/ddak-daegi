@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Slf4j
@@ -38,16 +39,33 @@ public class S3ImageService implements ImageService {
 	public ImageResponse saveImage(MultipartFile file, String type) {
 
 		ImageType imageType = ImageType.valueOf(type.toUpperCase());
-		String imageUrl = upload(file, type);
+		String fileName = upload(file, type);
+		String imageUrl = convertToUrl(fileName);
 
-		Image image = new Image(imageUrl, imageType);
+		Image image = new Image(imageUrl, imageType, fileName);
 		Image savedImage = imageRepository.save(image);
 
 		return new ImageResponse(savedImage.getId(), savedImage.getImageUrl());
 	}
 
 	@Override
-	public String upload(MultipartFile file, String type) {
+	public void deleteImage(Long imageId) {
+		Image image = imageRepository.findById(imageId).orElseGet(null);
+
+		deleteImage(image.getFileName());
+
+		imageRepository.delete(image);
+	}
+
+	private void deleteImage(String s3ImageKey) {
+		DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+			.bucket(bucket)
+			.key(s3ImageKey)
+			.build();
+		s3Client.deleteObject(deleteObjectRequest);
+	}
+
+	private String upload(MultipartFile file, String type) {
 		String s3ImageKey = generateKey(file.getOriginalFilename(), type);
 		String contentType = file.getContentType();
 
@@ -64,7 +82,7 @@ public class S3ImageService implements ImageService {
 
 		try {
 			s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
-			return convertToUrl(s3ImageKey);
+			return s3ImageKey;
 		} catch (IOException e) {
 			log.error("Failed to upload file", e);
 			throw new BaseException(FAIL_UPLOAD_IMAGE);
