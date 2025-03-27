@@ -16,10 +16,13 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "product")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends Timestamped {
 
@@ -50,6 +53,7 @@ public class Product extends Timestamped {
 	private Long price;
 
 	@Column
+	@ColumnDefault("null")
 	private LocalDateTime deletedAt; // soft delete 를 위한 변수
 
 	// 생성자
