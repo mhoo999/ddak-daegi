@@ -6,7 +6,7 @@ import com.example.ddakdaegi.global.common.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +18,8 @@ public class ImageController {
 	private final ImageService imageService;
 
 	@PostMapping("/v1/images")
-	public Response<ImageResponse> saveImage(@RequestParam("file") MultipartFile image,
-		@RequestParam("type") String type) {
+	public Response<ImageResponse> saveImage(@RequestPart("file") MultipartFile image,
+		@RequestPart("type") String type) {
 		ImageResponse imageResponse = imageService.saveImage(image, type);
 
 		return Response.of(imageResponse);
