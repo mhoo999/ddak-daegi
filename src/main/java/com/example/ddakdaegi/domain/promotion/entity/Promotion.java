@@ -41,12 +41,6 @@ public class Promotion extends Timestamped {
         this.isActive = isActive;
     }
 
-    public static Promotion create(String name, Image banner, LocalDateTime start, LocalDateTime end) {
-        Promotion promotion = new Promotion(name, banner, start, end, false);
-        promotion.updateIsActive();
-        return promotion;
-    }
-
     public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate) {
         if (name != null) {
             this.name = name;
@@ -59,14 +53,6 @@ public class Promotion extends Timestamped {
         }
         if (endDate != null) {
             this.endTime = endDate;
-        }
-        updateIsActive();
-    }
-
-    private void updateIsActive() {
-        if (this.startTime != null && this.endTime != null) {
-            this.isActive = !LocalDateTime.now().isBefore(this.startTime)
-                && !LocalDateTime.now().isAfter(this.endTime);
         }
     }
 

@@ -42,11 +42,12 @@ public class PromotionService {
 
 		Image newBanner = null;
 
-		Promotion promotion = Promotion.create(
+		Promotion promotion = new Promotion(
 			request.getName(),
 			newBanner,
 			request.getStartDate(),
-			request.getEndDate()
+			request.getEndDate(),
+			false
 		);
 
 		promotionRepository.save(promotion);
