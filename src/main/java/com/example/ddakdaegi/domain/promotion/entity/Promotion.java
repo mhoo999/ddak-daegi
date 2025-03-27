@@ -1,11 +1,8 @@
 package com.example.ddakdaegi.domain.promotion.entity;
 
 import com.example.ddakdaegi.domain.image.entity.Image;
-import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequest;
 import com.example.ddakdaegi.global.common.entity.Timestamped;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

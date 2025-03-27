@@ -3,12 +3,13 @@ package com.example.ddakdaegi.domain.promotion.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreatePromotionRequest {
 
 	private String name;
@@ -19,12 +20,4 @@ public class CreatePromotionRequest {
 	private LocalDateTime endDate;
 	private List<CreatePromotionProductRequest> promotionProducts;
 
-	public CreatePromotionRequest(String name, String bannerImage,
-		LocalDateTime startDate, LocalDateTime endDate, List<CreatePromotionProductRequest> promotionProducts) {
-		this.name = name;
-		this.bannerImage = bannerImage;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.promotionProducts = promotionProducts;
-	}
 }

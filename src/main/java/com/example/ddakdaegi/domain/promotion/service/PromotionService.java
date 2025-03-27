@@ -3,7 +3,6 @@ package com.example.ddakdaegi.domain.promotion.service;
 import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.*;
 
 import com.example.ddakdaegi.domain.image.entity.Image;
-import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionProductRequest;
@@ -159,7 +158,7 @@ public class PromotionService {
 		BigDecimal result;
 
 		if (policy == DiscountPolicy.RATE) {
-			BigDecimal rate = BigDecimal.valueOf(value).divide(BigDecimal.valueOf(100)); // value = 10 → 0.1
+			BigDecimal rate = BigDecimal.valueOf(value).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 			result = original.multiply(BigDecimal.ONE.subtract(rate));
 		} else if (policy == DiscountPolicy.FIXED) {
 			result = original.subtract(BigDecimal.valueOf(value));
