@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PromotionProductDto {
+public class PromotionProductRequest {
 
 	private Long promotionProductId;
-	private Long promotionProductPrice;
 	private Long quantity;
 }

@@ -62,4 +62,8 @@ public class PromotionProduct extends Timestamped {
 	public void decreaseStock(Long quantity) {
 		this.stock -= quantity;
 	}
+
+	public void revertStock(Long quantity) {
+		this.stock += quantity;
+	}
 }
