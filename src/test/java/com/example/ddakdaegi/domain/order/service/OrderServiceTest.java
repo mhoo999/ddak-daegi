@@ -6,7 +6,7 @@ import com.example.ddakdaegi.domain.image.repository.ImageRepository;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.member.enums.UserRole;
 import com.example.ddakdaegi.domain.member.repository.MemberRepository;
-import com.example.ddakdaegi.domain.order.dto.request.PromotionProductDto;
+import com.example.ddakdaegi.domain.order.dto.request.PromotionProductRequest;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.domain.promotion.entity.Promotion;
@@ -60,13 +60,13 @@ public class OrderServiceTest {
 			.phoneNumber("01022223333").role(UserRole.ROLE_ADMIN).build();
 		memberRepository.save(member);
 
-		Image url = new Image("url", ImageType.PRODUCT);
+		Image url = new Image("url", ImageType.PRODUCT, "filename");
 		imageRepository.save(url);
 
 		Promotion promotion = new Promotion("name", url, LocalDateTime.now(), LocalDateTime.now(), true);
 		promotionRepository.save(promotion);
 
-		Image urlas = new Image("urlas", ImageType.PROMOTION);
+		Image urlas = new Image("urlas", ImageType.PROMOTION, "filename");
 		imageRepository.save(urlas);
 		Product product = new Product(member, "des", "name", urlas, 1000L, 21000L);
 		productRepository.save(product);
@@ -93,9 +93,7 @@ public class OrderServiceTest {
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failedCount = new AtomicInteger(0);
 
-		List<PromotionProductDto> productDtos = List.of(
-			new PromotionProductDto(promotionProduct.getId(), promotionProduct.getPrice(), 1L)
-		);
+		List<PromotionProductRequest> productDtos = List.of(new PromotionProductRequest(promotionProduct.getId(), 1L));
 
 		for (int i = 0; i < threadCount; i++) {
 			executorService.execute(() -> {

@@ -11,22 +11,30 @@ import lombok.Getter;
 public class OrderResponse {
 
 	private final Long orderId;
-	private final List<OrderPromotionProductDto> orderPromotionProducts;
+	private final List<OrderPromotionProductDto> orderPromotionProductDtos;
 	private final Long totalPrice;
 	private final OrderStatus status;
 	private final LocalDateTime orderCompletionTime;
 
-	private OrderResponse(Order order, List<OrderPromotionProduct> orderPromotionProducts) {
-		this.orderId = order.getId();
-		this.orderPromotionProducts = orderPromotionProducts.stream()
-			.map(OrderPromotionProductDto::of)
-			.toList();
-		this.totalPrice = order.getTotalPrice();
-		this.status = order.getStatus();
-		this.orderCompletionTime = LocalDateTime.now();
+	public OrderResponse(Long orderId, List<OrderPromotionProductDto> orderPromotionProductDtos, Long totalPrice,
+		OrderStatus status, LocalDateTime orderCompletionTime) {
+		this.orderId = orderId;
+		this.orderPromotionProductDtos = orderPromotionProductDtos;
+		this.totalPrice = totalPrice;
+		this.status = status;
+		this.orderCompletionTime = orderCompletionTime;
 	}
 
 	public static OrderResponse of(Order order, List<OrderPromotionProduct> orderPromotionProducts) {
-		return new OrderResponse(order, orderPromotionProducts);
+		List<OrderPromotionProductDto> orderPromotionProductDtos =
+			orderPromotionProducts.stream().map(OrderPromotionProductDto::of).toList();
+
+		return new OrderResponse(
+			order.getId(), orderPromotionProductDtos, order.getTotalPrice(), order.getStatus(), order.getCreatedAt());
+	}
+
+	public static OrderResponse ofDto(Order order, List<OrderPromotionProductDto> orderPromotionProductDtos) {
+		return new OrderResponse(
+			order.getId(), orderPromotionProductDtos, order.getTotalPrice(), order.getStatus(), order.getCreatedAt());
 	}
 }

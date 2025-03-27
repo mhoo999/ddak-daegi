@@ -46,4 +46,8 @@ public class Order extends Timestamped {
 	public static Order of(Member member, Long totalPrice) {
 		return new Order(member, totalPrice);
 	}
+
+	public void cancelOrder() {
+		this.status = OrderStatus.CANCELED;
+	}
 }
