@@ -17,6 +17,10 @@ public enum ErrorCode {
 	TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "토큰이 만료되었습니다."),
 	TOKEN_UNSUPPORTED(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
 	ROLE_UNSUPPORTED(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
+	// image 예외 처리
+	INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, "이미지 파일(jpg, png)만 업로드할 수 있습니다."),
+	FAIL_UPLOAD_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."),
+
 	// order 예외처리
 
 	// product 예외처리
