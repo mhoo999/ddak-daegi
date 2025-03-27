@@ -40,15 +40,13 @@ public class PromotionService {
 			throw new BaseException(INVALID_DATE_RANGE);
 		}
 
-		Image newBanner = null;
-
-		Promotion promotion = new Promotion(
+		Promotion promotion = promotionRepository.save(new Promotion(
 			request.getName(),
-			newBanner,
+			null,
 			request.getStartDate(),
 			request.getEndDate(),
 			false
-		);
+		));
 
 		promotionRepository.save(promotion);
 

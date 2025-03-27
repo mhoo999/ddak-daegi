@@ -20,7 +20,7 @@ public class Promotion extends Timestamped {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "banner_id")
     private Image banner;
 
