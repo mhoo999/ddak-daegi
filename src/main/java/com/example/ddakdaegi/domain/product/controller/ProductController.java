@@ -88,10 +88,11 @@ public class ProductController {
 	*/
 	@PatchMapping("/v1/products/soldout/{productId}")
 	public Response<ProductResponse> setSoldOut(
+		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable("productId") Long productId,
 		@RequestBody ProductSoldOutSetRequest productSoldOutSetRequest
 	) {
-		ProductResponse productResponse = productService.setSoldOut(productId, productSoldOutSetRequest.isSoldOut());
+		ProductResponse productResponse = productService.setSoldOut(authUser, productId, productSoldOutSetRequest.isSoldOut());
 
 		return Response.of(productResponse);
 	}
@@ -100,8 +101,17 @@ public class ProductController {
 	/*
 		상품 정보 수정
 	*/
-	//@PatchMapping("/v1/products/{productId}")
-	//public Response<ProductResponse>
+	@PatchMapping("/v1/products/{productId}")
+	public Response<ProductResponse> editProduct(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable("productId") Long productId,
+		@RequestBody ProductRequest productRequest
+	){
+		ProductResponse productResponse = productService.editProduct(authUser, productId, productRequest);
+
+		return Response.of(productResponse);
+
+	}
 
 
 }

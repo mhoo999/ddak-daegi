@@ -98,10 +98,18 @@ public class ProductService {
 		상품 판매상태 변경 메서드
 	*/
 	@Transactional
-	public ProductResponse setSoldOut(Long productId, boolean soldOut){
+	public ProductResponse setSoldOut(AuthUser authUser, Long productId, boolean soldOut){
+
+		Member member = Member.fromAuthUser(authUser);
 
 		Product product = productRepository.findById(productId)
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+
+
+		// 다른 유저의 상품 수정을 방지하는 기능
+		if(product.getMember().getId() != member.getId()){
+			throw new BaseException(ErrorCode.IS_NOT_YOUR_PRODUCT);
+		}
 
 		// Product 레코드 soldOut 의 저장된 값이 요청한 값과 동일한 경우 -> 불필요한 Repository.save 매서드 호출 방지
 		if(product.getSoldOut() == soldOut){
@@ -115,6 +123,36 @@ public class ProductService {
 
 	}
 
+
+	/*
+		상품 정보 수정 메서드
+	*/
+	@Transactional
+	public ProductResponse editProduct(AuthUser authUser, Long productId, ProductRequest productRequest){
+
+		Member member = Member.fromAuthUser(authUser);
+
+		// 요청한 productId 값의 상품이 없을 경우
+		Product product = productRepository.findById(productId)
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PRODUCT));
+
+		// 다른 유저의 상품 수정을 방지하는 기능
+		if(product.getMember().getId() != member.getId()){
+			throw new BaseException(ErrorCode.IS_NOT_YOUR_PRODUCT);
+		}
+
+		// 상품 수정
+		product.setDescription(productRequest.getDescription());
+		product.setName(productRequest.getName());
+		product.setImage(productRequest.getImage());
+		product.setStock(productRequest.getStock());
+		product.setPrice(productRequest.getPrice());
+
+		productRepository.save(product);
+
+		return new ProductResponse(product);
+
+	}
 
 
 
