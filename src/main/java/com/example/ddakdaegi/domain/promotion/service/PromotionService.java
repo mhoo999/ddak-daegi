@@ -44,7 +44,7 @@ public class PromotionService {
 
 		Promotion promotion = promotionRepository.save(new Promotion(
 			request.getName(),
-			imageRepository.findById(request.getImage()).orElseThrow(() -> new BaseException(NOT_FOUND_PRODUCT)),
+			imageRepository.findById(request.getImage()).orElseThrow(() -> new BaseException(NOT_FOUND_IMAGE)),
 			request.getStartDate(),
 			request.getEndDate(),
 			false
