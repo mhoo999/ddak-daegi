@@ -52,12 +52,15 @@ public class ProductService {
 
 		Member member = Member.fromAuthUser(authUser);
 
+		// 등록할 이미지
+		Image image = imageRepository.findById(productRequest.getImage())
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE));
+
 		Product product = new Product(
 			member,
 			productRequest.getDescription(),
 			productRequest.getName(),
-			imageRepository.findById(productRequest.getImage())
-				.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE)),
+			image,
 			productRequest.getStock(),
 			productRequest.getPrice()
 		);
@@ -145,11 +148,14 @@ public class ProductService {
 			throw new BaseException(ErrorCode.IS_NOT_YOUR_PRODUCT);
 		}
 
+		// 수정 이미지
+		Image image = imageRepository.findById(productRequest.getImage())
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE));
+
 		// 상품 수정
 		product.setDescription(productRequest.getDescription());
 		product.setName(productRequest.getName());
-		product.setImage(imageRepository.findById(productRequest.getImage())
-			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_IMAGE)));
+		product.setImage(image);
 		product.setStock(productRequest.getStock());
 		product.setPrice(productRequest.getPrice());
 
