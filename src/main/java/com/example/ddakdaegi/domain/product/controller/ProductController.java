@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,7 +86,7 @@ public class ProductController {
 	/*
 		상품 판매상태 변경
 	*/
-	@PostMapping("/v1/products/soldout/{productId}")
+	@PatchMapping("/v1/products/soldout/{productId}")
 	public Response<ProductResponse> setSoldOut(
 		@PathVariable("productId") Long productId,
 		@RequestBody ProductSoldOutSetRequest productSoldOutSetRequest
@@ -96,11 +97,11 @@ public class ProductController {
 	}
 
 
-
-
 	/*
 		상품 정보 수정
 	*/
+	//@PatchMapping("/v1/products/{productId}")
+	//public Response<ProductResponse>
 
 
 }
