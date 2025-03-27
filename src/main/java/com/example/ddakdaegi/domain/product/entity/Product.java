@@ -3,19 +3,12 @@ package com.example.ddakdaegi.domain.product.entity;
 import com.example.ddakdaegi.domain.image.entity.Image;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.global.common.entity.Timestamped;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -52,9 +45,14 @@ public class Product extends Timestamped {
 	@Column(nullable = false)
 	private Long price;
 
+	/*
+		soft delete 를 위한 변수
+		Product 어트리뷰트를 삭제하는 순간 날짜 시간이 대입을 하고
+		데이터가 DB에 논리적으로 존재하지 않는다고 취급
+	*/
 	@Column
-	@ColumnDefault("null")
-	private LocalDateTime deletedAt; // soft delete 를 위한 변수
+	@ColumnDefault("null") // 기본값 null -> 데이터가 DB에 논리적으로 존재
+	private LocalDateTime deletedAt;
 
 	// 생성자
 	public Product(
@@ -73,6 +71,7 @@ public class Product extends Timestamped {
 		this.price = price;
 
 		this.soldOut = false; // 기본 값
+		//this.deletedAt = null;
 	}
 
 	public void revertStock(Long quantity) {
