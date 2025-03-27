@@ -1,8 +1,8 @@
 package com.example.ddakdaegi.domain.order.service;
 
-import com.example.ddakdaegi.domain.image.ImageRepository;
 import com.example.ddakdaegi.domain.image.entity.Image;
 import com.example.ddakdaegi.domain.image.enums.ImageType;
+import com.example.ddakdaegi.domain.image.repository.ImageRepository;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.member.enums.UserRole;
 import com.example.ddakdaegi.domain.member.repository.MemberRepository;
@@ -60,13 +60,13 @@ public class OrderServiceTest {
 			.phoneNumber("01022223333").role(UserRole.ROLE_ADMIN).build();
 		memberRepository.save(member);
 
-		Image url = new Image("url", ImageType.PRODUCT);
+		Image url = new Image("url", ImageType.PRODUCT, "filename");
 		imageRepository.save(url);
 
 		Promotion promotion = new Promotion("name", url, LocalDateTime.now(), LocalDateTime.now(), true);
 		promotionRepository.save(promotion);
 
-		Image urlas = new Image("urlas", ImageType.PROMOTION);
+		Image urlas = new Image("urlas", ImageType.PROMOTION, "filename");
 		imageRepository.save(urlas);
 		Product product = new Product(member, "des", "name", urlas, 1000L, 21000L);
 		productRepository.save(product);

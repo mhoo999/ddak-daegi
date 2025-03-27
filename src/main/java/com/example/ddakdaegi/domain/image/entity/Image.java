@@ -25,11 +25,15 @@ public class Image extends Timestamped {
 	@Column(nullable = false)
 	private String imageUrl;
 
+	@Column(nullable = false)
+	private String fileName;
+
 	@Enumerated(EnumType.STRING)
 	private ImageType type;
 
-	public Image(String imageUrl, ImageType type) {
+	public Image(String imageUrl, ImageType type, String fileName) {
 		this.imageUrl = imageUrl;
 		this.type = type;
+		this.fileName = fileName;
 	}
 }
