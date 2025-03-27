@@ -3,7 +3,9 @@ package com.example.ddakdaegi.domain.order.controller;
 import com.example.ddakdaegi.domain.order.dto.request.CreateOrderRequest;
 import com.example.ddakdaegi.domain.order.dto.response.OrderDetailResponse;
 import com.example.ddakdaegi.domain.order.dto.response.OrderResponse;
+import com.example.ddakdaegi.domain.order.dto.response.StockResponse;
 import com.example.ddakdaegi.domain.order.service.OrderService;
+import com.example.ddakdaegi.domain.order.service.StockService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.response.Response;
 import jakarta.validation.Valid;
@@ -26,15 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final StockService stockService;
 
 	@PostMapping("/v1/orders")
 	public Response<OrderResponse> createOrder(
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody CreateOrderRequest request
 	) {
+		StockResponse stockResponse = stockService.decreaseStockAndCalculateTotalPrice(
+			request.getPromotionProductRequests());
 
 		OrderResponse orderResponse =
-			orderService.createOrder(authUser, request.getPromotionProductRequests());
+			orderService.createOrder(authUser, stockResponse);
 		return Response.of(orderResponse);
 	}
 
