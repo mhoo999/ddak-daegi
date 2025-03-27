@@ -3,12 +3,19 @@ package com.example.ddakdaegi.domain.product.entity;
 import com.example.ddakdaegi.domain.image.entity.Image;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.global.common.entity.Timestamped;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product")
@@ -64,4 +71,7 @@ public class Product extends Timestamped {
 		this.soldOut = false; // 기본 값
 	}
 
+	public void revertStock(Long quantity) {
+		this.stock += quantity;
+	}
 }
