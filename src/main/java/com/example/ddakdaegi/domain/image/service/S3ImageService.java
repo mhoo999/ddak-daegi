@@ -45,7 +45,7 @@ public class S3ImageService implements ImageService {
 		Image image = new Image(imageUrl, imageType, fileName);
 		Image savedImage = imageRepository.save(image);
 
-		return new ImageResponse(savedImage.getId(), savedImage.getImageUrl());
+		return new ImageResponse(savedImage.getId(), savedImage.getImageUrl(), savedImage.getFileName());
 	}
 
 	@Override

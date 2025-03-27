@@ -9,4 +9,5 @@ public class ImageResponse {
 
 	private final Long imageId;
 	private final String imageUrl;
+	private final String imageName;
 }
