@@ -42,14 +42,15 @@ public class PromotionController {
 	}
 
 	@GetMapping("/v1/promotions/{id}")
-	public Response<PromotionResponse> getPromotionById(@PathVariable Long id) {
-		return Response.of(promotionService.getPromotionById(id));
+	public Response<PromotionResponse> findPromotionById(@PathVariable Long id) {
+		return Response.of(promotionService.findPromotionById(id));
 	}
 
 	@PatchMapping("/v1/promotions/{id}")
 	public Response<PromotionResponse> updatePromotion(
 		@PathVariable Long id,
-		@RequestBody UpdatePromotionRequest request) {
+		@RequestBody UpdatePromotionRequest request
+	) {
 		return Response.of(promotionService.updatePromotion(id, request));
 	}
 

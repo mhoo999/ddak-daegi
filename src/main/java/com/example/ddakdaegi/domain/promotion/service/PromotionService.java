@@ -2,7 +2,7 @@ package com.example.ddakdaegi.domain.promotion.service;
 
 import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.*;
 
-import com.example.ddakdaegi.domain.image.entity.Image;
+import com.example.ddakdaegi.domain.image.repository.ImageRepository;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import com.example.ddakdaegi.domain.product.repository.ProductRepository;
 import com.example.ddakdaegi.domain.promotion.dto.request.CreatePromotionProductRequest;
@@ -34,6 +34,7 @@ public class PromotionService {
 	private final ProductRepository productRepository;
 	private final PromotionProductRepository promotionProductRepository;
 	private final PromotionSchedulerService schedulerService;
+	private final ImageRepository imageRepository;
 
 	@Transactional
 	public PromotionResponse createPromotion(CreatePromotionRequest request) {
@@ -43,7 +44,7 @@ public class PromotionService {
 
 		Promotion promotion = promotionRepository.save(new Promotion(
 			request.getName(),
-			null,
+			imageRepository.findById(request.getImage()).orElseThrow(() -> new BaseException(NOT_FOUND_PRODUCT)),
 			request.getStartDate(),
 			request.getEndDate(),
 			false
@@ -85,15 +86,7 @@ public class PromotionService {
 		schedulerService.schedulePromotion(promotion.getId(), promotion.getStartDate(), true);   // 활성화 예약
 		schedulerService.schedulePromotion(promotion.getId(), promotion.getEndDate(), false);    // 비활성화 예약
 
-		return new PromotionResponse(
-			promotion.getId(),
-			promotion.getName(),
-			promotion.getStartDate(),
-			promotion.getEndDate(),
-			promotion.getIsActive(),
-			promotion.getCreatedAt(),
-			promotion.getUpdatedAt()
-		);
+		return new PromotionResponse(promotion);
 	}
 
 	@Transactional(readOnly = true)
@@ -108,18 +101,10 @@ public class PromotionService {
 	}
 
 	@Transactional(readOnly = true)
-	public PromotionResponse getPromotionById(Long promotionId) {
+	public PromotionResponse findPromotionById(Long promotionId) {
 		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
 
-		return new PromotionResponse(
-			promotion.getId(),
-			promotion.getName(),
-			promotion.getStartDate(),
-			promotion.getEndDate(),
-			promotion.getIsActive(),
-			promotion.getCreatedAt(),
-			promotion.getUpdatedAt()
-		);
+		return new PromotionResponse(promotion);
 	}
 
 	@Transactional
@@ -129,25 +114,15 @@ public class PromotionService {
 		}
 
 		Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new BaseException(NOT_FOUND_PROMOTION));
-
-		Image newBanner = null;
 		promotion.update(
 			request.getName(),
-			newBanner,
+			imageRepository.findById(request.getImage()).orElseThrow(() -> new BaseException(NOT_FOUND_PRODUCT)),
 			request.getStartDate(),
 			request.getEndDate(),
 			request.getIsTerminate()
 		);
 
-		return new PromotionResponse(
-			promotion.getId(),
-			promotion.getName(),
-			promotion.getStartDate(),
-			promotion.getEndDate(),
-			promotion.getIsActive(),
-			promotion.getCreatedAt(),
-			promotion.getUpdatedAt()
-		);
+		return new PromotionResponse(promotion);
 	}
 
 	@Transactional
