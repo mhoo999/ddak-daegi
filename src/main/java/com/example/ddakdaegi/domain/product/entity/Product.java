@@ -74,4 +74,7 @@ public class Product extends Timestamped {
 		//this.deletedAt = null;
 	}
 
+	public void revertStock(Long quantity) {
+		this.stock += quantity;
+	}
 }
