@@ -5,6 +5,7 @@ import com.example.ddakdaegi.domain.order.dto.response.StockResponse;
 import com.example.ddakdaegi.domain.promotion.entity.PromotionProduct;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionProductRepository;
 import com.example.ddakdaegi.domain.promotion.repository.PromotionRepository;
+import com.example.ddakdaegi.global.common.annotation.Locked;
 import com.example.ddakdaegi.global.common.exception.BaseException;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class StockService {
 	private final PromotionProductRepository promotionProductRepository;
 	private final PromotionRepository promotionRepository;
 
+	@Locked
 	@Transactional
 	public StockResponse decreaseStockAndCalculateTotalPrice(
 		Long promotionId,
@@ -33,10 +35,6 @@ public class StockService {
 	) {
 		if (!promotionRepository.promotionIsActive(promotionId)) {
 			throw new BaseException(PROMOTION_NOT_STARTED);
-		}
-
-		if (promotionProductRequests.isEmpty()) {
-			throw new BaseException(NOT_FOUND_PROMOTION_PRODUCT);
 		}
 
 		List<Long> promotionProductIds = promotionProductRequests.stream()
