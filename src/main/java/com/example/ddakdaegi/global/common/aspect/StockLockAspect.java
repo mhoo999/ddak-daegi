@@ -25,7 +25,7 @@ public class StockLockAspect {
 
 	private final RedissonClient redissonClient;
 
-	@Around("execution(* com.example.ddakdaegi.domain.order.service.StockService.decreaseStockAndCalculateTotalPrice(..))")
+	@Around("@annotation(com.example.ddakdaegi.global.common.annotation.Locked)")
 	public Object lockAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		log.info("AOP Lock 로직 시작");
 

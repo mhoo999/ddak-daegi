@@ -89,7 +89,7 @@ class ConcurrencyStockServiceTest {
 	}
 
 	@Test
-	void 동시성_제어가_안되는_테스트() throws InterruptedException {
+	void 동시_주문_재고관리_테스트() throws InterruptedException {
 
 		PromotionProduct promotionProduct = promotionProductRepository.findById(1L)
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PROMOTION_PRODUCT));
