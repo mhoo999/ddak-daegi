@@ -28,6 +28,7 @@ public enum ErrorCode {
 	INSUFFICIENT_PROMOTION_PRODUCT_STOCK(HttpStatus.BAD_REQUEST, "이벤트 상품의 재고가 없습니다."),
 	LOCK_ACQUISITION_INTERRUPTED(HttpStatus.INTERNAL_SERVER_ERROR, "Lock 획득 대기 중 인터럽트 되었습니다."),
 	PROMOTION_NOT_STARTED(HttpStatus.BAD_REQUEST, "아직 시작하지 않은 프로모션입니다."),
+	LOCK_ACQUISITION_FAILED(HttpStatus.BAD_REQUEST, "LocK 획득에 실패했습니다."),
 
 	// product 예외처리
 	SOLD_OUT_SAME_FLAG(HttpStatus.BAD_REQUEST, "상품판매 상태가 요청하신 값으로 이미 설정되어 있습니다."),
