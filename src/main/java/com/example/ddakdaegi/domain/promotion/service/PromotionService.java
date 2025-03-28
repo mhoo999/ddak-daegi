@@ -64,6 +64,8 @@ public class PromotionService {
 				throw new BaseException(OVER_STOCK);
 			}
 
+			product.revertStock(-(ppRequest.getStock()));
+
 			Long discountedPrice = calculateDiscountedPrice(
 				product.getPrice(),
 				ppRequest.getDiscountPolicy(),
