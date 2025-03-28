@@ -91,7 +91,7 @@ class LettuceLockStockFacadeTest {
 
 	@Test
 	@DisplayName("동시에 여러 주문이 들어올 때 재고 관리 동시성 테스트")
-	void 동시주문_재고관리_테스트() throws InterruptedException {
+	void 동시_주문_재고관리_테스트() throws InterruptedException {
 
 		PromotionProduct promotionProduct = promotionProductRepository.findById(1L)
 			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PROMOTION_PRODUCT));
