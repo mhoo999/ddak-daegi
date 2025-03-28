@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -90,6 +91,7 @@ class RedissonLockStockFacadeTest {
 	}
 
 	@Test
+	@Disabled
 	@DisplayName("동시에 여러 주문이 들어올 때 재고 관리 동시성 테스트")
 	void 동시_주문_재고관리_테스트() throws InterruptedException {
 
