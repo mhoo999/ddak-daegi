@@ -13,6 +13,11 @@ on:
 jobs:
   test-build:
     runs-on: ubuntu-latest # 우분투 최신 버전에서
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v4 # 현재 브랜치의 코드를 actions 서버에 올리기
