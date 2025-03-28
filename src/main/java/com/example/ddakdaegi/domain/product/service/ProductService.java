@@ -3,6 +3,7 @@ package com.example.ddakdaegi.domain.product.service;
 import com.example.ddakdaegi.domain.image.entity.Image;
 import com.example.ddakdaegi.domain.image.repository.ImageRepository;
 import com.example.ddakdaegi.domain.member.entity.Member;
+import com.example.ddakdaegi.domain.member.repository.MemberRepository;
 import com.example.ddakdaegi.domain.product.dto.request.ProductRequest;
 import com.example.ddakdaegi.domain.product.dto.response.ProductResponse;
 import com.example.ddakdaegi.domain.product.entity.Product;
@@ -27,6 +28,7 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 	private final ImageRepository imageRepository;
+	private final MemberRepository memberRepository;
 
 	/*
 		상품 조회 메서드
@@ -50,7 +52,9 @@ public class ProductService {
 	@Transactional
 	public ProductResponse saveProduct(AuthUser authUser, ProductRequest productRequest) {
 
-		Member member = Member.fromAuthUser(authUser);
+		// 등록할 멤버(회원) 정보
+		Member member = memberRepository.findById(authUser.getId())
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MEMBER));
 
 		// 등록할 이미지
 		Image image = imageRepository.findById(productRequest.getImage())
