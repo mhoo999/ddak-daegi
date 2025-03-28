@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class CreateOrderRequest {
 
 	@NotNull
+	private Long promotionId;
+
+	@NotNull
 	@Size(min = 1)
 	private List<PromotionProductRequest> promotionProductRequests;
 
