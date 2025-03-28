@@ -20,13 +20,23 @@ public enum ErrorCode {
 	// image 예외 처리
 	INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, "이미지 파일(jpg, png)만 업로드할 수 있습니다."),
 	FAIL_UPLOAD_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."),
+	NOT_FOUND_IMAGE(HttpStatus.BAD_REQUEST, "존재하지 않는 이미지 입니다."),
 
 	// order 예외처리
+	NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
+	EMPTY_PROMOTION_PRODUCT_REQUEST(HttpStatus.BAD_REQUEST, "프로모션 상품 요청 리스트가 비어있습니다."),
+	INSUFFICIENT_PROMOTION_PRODUCT_STOCK(HttpStatus.BAD_REQUEST, "이벤트 상품의 재고가 없습니다."),
+	LOCK_ACQUISITION_INTERRUPTED(HttpStatus.INTERNAL_SERVER_ERROR, "Lock 획득 대기 중 인터럽트 되었습니다."),
+	PROMOTION_NOT_STARTED(HttpStatus.BAD_REQUEST, "아직 시작하지 않은 프로모션입니다."),
 
 	// product 예외처리
+	SOLD_OUT_SAME_FLAG(HttpStatus.BAD_REQUEST, "상품판매 상태가 요청하신 값으로 이미 설정되어 있습니다."),
+	IS_NOT_YOUR_PRODUCT(HttpStatus.BAD_REQUEST, "회원님이 등록한 상품이 아닙니다."),
+	// NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다.")
 
 	// promotion 예외처리
 	NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다."),
+	NOT_FOUND_PROMOTION_PRODUCT(HttpStatus.NOT_FOUND, "프로모션 상품을 찾을 수 없습니다."),
 	SOLD_OUT(HttpStatus.BAD_REQUEST, "해당 상품은 품절 상태입니다."),
 	OVER_STOCK(HttpStatus.BAD_REQUEST, "프로모션 재고가 상품 보유 재고보다 많을 수 없습니다."),
 	WRONG_POLICY(HttpStatus.BAD_REQUEST, "잘못된 할인 정책입니다."),
@@ -34,7 +44,7 @@ public enum ErrorCode {
 	INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "종료일이 시작일보다 먼저 올 수 없습니다."),
 
 	TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "잘못된 타입 입니다."),
-	SERVER_NOT_WORK(HttpStatus.INTERNAL_SERVER_ERROR, "서버문제로인해 실패했습니다.");
+	SERVER_NOT_WORK(HttpStatus.INTERNAL_SERVER_ERROR, "서버 문제로 인해 실패했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

@@ -1,11 +1,8 @@
 package com.example.ddakdaegi.domain.promotion.entity;
 
 import com.example.ddakdaegi.domain.image.entity.Image;
-import com.example.ddakdaegi.domain.promotion.dto.request.UpdatePromotionRequest;
 import com.example.ddakdaegi.global.common.entity.Timestamped;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +25,10 @@ public class Promotion extends Timestamped {
     private Image banner;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalDateTime endDate;
 
     @Column(nullable = false)
     private Boolean isActive;
@@ -39,18 +36,12 @@ public class Promotion extends Timestamped {
     public Promotion(String name, Image banner, LocalDateTime startTime, LocalDateTime endTime, Boolean isActive) {
         this.name = name;
         this.banner = banner;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startTime;
+        this.endDate = endTime;
         this.isActive = isActive;
     }
 
-    public static Promotion create(String name, Image banner, LocalDateTime start, LocalDateTime end) {
-        Promotion promotion = new Promotion(name, banner, start, end, false);
-        promotion.updateIsActive();
-        return promotion;
-    }
-
-    public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate) {
+    public void update(String name, Image newBannerImage, LocalDateTime startDate, LocalDateTime endDate, boolean isTerminate) {
         if (name != null) {
             this.name = name;
         }
@@ -58,18 +49,18 @@ public class Promotion extends Timestamped {
             this.banner = newBannerImage;
         }
         if (startDate != null) {
-            this.startTime = startDate;
+            this.startDate = startDate;
         }
         if (endDate != null) {
-            this.endTime = endDate;
+            this.endDate = endDate;
         }
-        updateIsActive();
+        if (isTerminate) {
+            this.isActive = false;
+        }
     }
 
-    private void updateIsActive() {
-        if (this.startTime != null && this.endTime != null) {
-            this.isActive = !LocalDateTime.now().isBefore(this.startTime)
-                && !LocalDateTime.now().isAfter(this.endTime);
-        }
+    public void setActive(boolean activate) {
+        this.isActive = activate;
     }
+
 }

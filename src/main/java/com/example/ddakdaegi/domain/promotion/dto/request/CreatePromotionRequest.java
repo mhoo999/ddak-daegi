@@ -1,26 +1,33 @@
 package com.example.ddakdaegi.domain.promotion.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class CreatePromotionRequest {
 
-	private String name;
-	private String bannerImage;
-	private List<CreatePromotionProductRequest> promotionProducts;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
+	@NotBlank(message = "프로모션 이름은 필수 입력 사항입니다.")
+	private final String name;
 
-	public CreatePromotionRequest(String name, String banner_image, List<CreatePromotionProductRequest> promotionProducts,
-		LocalDateTime startDate, LocalDateTime endDate) {
-		this.name = name;
-		this.bannerImage = banner_image;
-		this.promotionProducts = promotionProducts;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
+	private final Long image;
+
+	@NotNull(message = "시작 날짜는 필수 입력 항목입니다.")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	private final LocalDateTime startDate;
+
+	@NotNull(message="종료 날짜는 필수 입력 항목입니다.")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	private final LocalDateTime endDate;
+
+	@NotNull(message="프로모션 상품 리스트는 필수 입력 항목입니다.")
+	@Size(min = 1, message ="최소 하나의 상품이 포함되어야 합니다.")
+	private final List<CreatePromotionProductRequest> promotionProducts;
+
 }
