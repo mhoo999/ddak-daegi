@@ -7,7 +7,7 @@ import com.example.ddakdaegi.domain.order.dto.response.StockResponse;
 import com.example.ddakdaegi.domain.order.service.OrderService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.response.Response;
-import com.example.ddakdaegi.global.util.lock.LettuceLockStockFacade;
+import com.example.ddakdaegi.global.util.lock.RedissonLockStockFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
-	private final LettuceLockStockFacade stockFacade;
+	private final RedissonLockStockFacade stockFacade;
 
 	@PostMapping("/v1/orders")
 	public Response<OrderResponse> createOrder(
