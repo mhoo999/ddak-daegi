@@ -112,16 +112,15 @@ class ConcurrencyStockServiceTest {
 			new PromotionProductRequest(promotionProduct1.getId(), 1L));
 
 		for (int i = 0; i < threadCount; i++) {
-			int num = 1 + i;
+//			int num = 1 + i;
 			executorService.execute(() -> {
 				try {
-					Thread.sleep(100 % num * 100);
+//					Thread.sleep(100 % num * 100);    // 커넥션을 동시에 가져가지 않도록 하기 위함
 					stockService.decreaseStockAndCalculateTotalPrice(promotion.getId(), request);
 					successCount.incrementAndGet();
 				} catch (Exception e) {
 					failedCount.incrementAndGet();
 					log.error("exception: ", e);
-					System.out.println(e.getClass().getSimpleName());
 				} finally {
 					doneLatch.countDown();
 				}
