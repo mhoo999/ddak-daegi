@@ -2,6 +2,7 @@ package com.example.ddakdaegi.domain.product.dto.response;
 
 import com.example.ddakdaegi.domain.image.dto.response.ImageResponse;
 import com.example.ddakdaegi.domain.image.entity.Image;
+import com.example.ddakdaegi.domain.member.dto.response.MemberResponse;
 import com.example.ddakdaegi.domain.member.entity.Member;
 import com.example.ddakdaegi.domain.product.entity.Product;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ public class ProductResponse {
 
 	private final Long id;
 
-	private final Member member;
+	private final MemberResponse member;
 
 	private final String description;
 
@@ -31,7 +32,7 @@ public class ProductResponse {
 	// Product 클래스를 받는 생성자
 	public ProductResponse(Product product) {
 		this.id = product.getId();
-		this.member = product.getMember();
+		this.member = new MemberResponse(product.getMember().getEmail(), product.getMember().getPhoneNumber(), product.getMember().getAddress());
 		this.description = product.getDescription();
 		this.name = product.getName();
 		this.image = new ImageResponse(product.getImage().getId(), product.getImage().getImageUrl(), product.getImage().getFileName());
@@ -45,7 +46,7 @@ public class ProductResponse {
 	public static ProductResponse toDto(Product product) {
 		return new ProductResponse(
 			product.getId(),
-			product.getMember(),
+			new MemberResponse(product.getMember().getEmail(), product.getMember().getPhoneNumber(), product.getMember().getAddress()),
 			product.getDescription(),
 			product.getName(),
 			new ImageResponse(product.getImage().getId(), product.getImage().getImageUrl(), product.getImage().getFileName()),
