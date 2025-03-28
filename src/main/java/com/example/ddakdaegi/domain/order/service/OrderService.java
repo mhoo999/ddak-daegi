@@ -11,6 +11,7 @@ import com.example.ddakdaegi.domain.order.repository.OrderPromotionProductReposi
 import com.example.ddakdaegi.domain.order.repository.OrderRepository;
 import com.example.ddakdaegi.domain.promotion.entity.PromotionProduct;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
+import com.example.ddakdaegi.global.common.exception.BaseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.ddakdaegi.global.common.exception.enums.ErrorCode.NOT_FOUND_ORDER;
 
 @Slf4j
 @Service
@@ -34,7 +38,7 @@ public class OrderService {
 	public OrderResponse createOrder(AuthUser authUser, StockResponse stockResponse) {
 
 		Member getMember = memberRepository.findById(authUser.getId())
-			.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
+			.orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
 		Order newOrder = Order.of(getMember, stockResponse.getTotalPrice());
 		orderRepository.save(newOrder);
@@ -52,10 +56,10 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public OrderDetailResponse getOrder(Long orderId, AuthUser authUser) {
 		Member member = memberRepository.findById(authUser.getId())
-			.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
+			.orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
 		Order getOrder = orderRepository.findByOrderIdAndMemberId(orderId, authUser.getId())
-			.orElseThrow(() -> new RuntimeException("주문을 찾을 수 없음"));
+			.orElseThrow(() -> new BaseException(NOT_FOUND_ORDER));
 
 		List<OrderPromotionProduct> getOrderPromotionProduct = orderPromotionProductRepository.findByOrderId(orderId);
 		return OrderDetailResponse.of(getOrder, member, getOrderPromotionProduct);
@@ -69,7 +73,7 @@ public class OrderService {
 	@Transactional
 	public void cancelOrder(Long orderId, AuthUser authUser) {
 		Order getOrder = orderRepository.findByOrderIdAndMemberId(orderId, authUser.getId())
-			.orElseThrow(() -> new RuntimeException("사용자의 주문을 찾을 수 없음"));
+			.orElseThrow(() -> new BaseException(NOT_FOUND_ORDER));
 
 		List<OrderPromotionProduct> getOrderPromotionProduct = orderPromotionProductRepository.findByOrderId(orderId);
 

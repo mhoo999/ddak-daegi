@@ -36,7 +36,8 @@ public class OrderController {
 		@Valid @RequestBody CreateOrderRequest request
 	) {
 		StockResponse stockResponse =
-			stockService.decreaseStockAndCalculateTotalPrice(request.getPromotionProductRequests());
+			stockService.decreaseStockAndCalculateTotalPrice(
+				request.getPromotionId(), request.getPromotionProductRequests());
 
 		OrderResponse orderResponse =
 			orderService.createOrder(authUser, stockResponse);
