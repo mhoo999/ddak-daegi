@@ -50,9 +50,9 @@ jobs:
             - 잘못된 로직, 성능 이슈
             - 읽기 어려운 코드 또는 리팩토링 포인트
             - Clean Code / SOLID 원칙 위반
-            문제가 없다고 판단되면 그 이유도 함께 서술하세요.
+            문제가 없다고 판단되면 LGTM 작성.
           LANGUAGE: Korean
-          MODEL: gpt-3.5-turbo
+          MODEL: gpt-4o
           max_tokens: 2000
 
 
