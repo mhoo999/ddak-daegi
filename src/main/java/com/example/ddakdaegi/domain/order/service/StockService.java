@@ -35,10 +35,6 @@ public class StockService {
 			throw new BaseException(PROMOTION_NOT_STARTED);
 		}
 
-		if (promotionProductRequests.isEmpty()) {
-			throw new BaseException(NOT_FOUND_PROMOTION_PRODUCT);
-		}
-
 		List<Long> promotionProductIds = promotionProductRequests.stream()
 			.map(PromotionProductRequest::getPromotionProductId)
 			.toList();
