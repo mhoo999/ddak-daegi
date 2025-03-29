@@ -52,6 +52,12 @@ jobs:
       - name: Build with Gradle Wrapper
         run: chmod +x ./gradlew && ./gradlew jacocoTestReport
 
+      - name: Upload JaCoCo HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: build/jacocoHtml/index.html
+
       - name: Jacoco Report to PR
         id: jacoco
         uses: madrapps/jacoco-report@v1.7.1
@@ -69,9 +75,3 @@ jobs:
         with:
           script: |
             core.setFailed('서비스 레이어 전체 커버리지가 80% 미만입니다.')
-
-      - name: Upload JaCoCo HTML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-html-report
-          path: build/jacocoHtml/index.html
