@@ -27,14 +27,14 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,20 +48,19 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-	@MockitoBean
+	@Mock
 	private OrderRepository orderRepository;
 
-	@MockitoBean
+	@Mock
 	private MemberRepository memberRepository;
 
-	@MockitoBean
+	@Mock
 	private OrderPromotionProductRepository orderPromotionProductRepository;
 
-	@Autowired
+	@InjectMocks
 	private OrderService orderService;
 
 	/* MOCK 객체 */
@@ -93,27 +92,21 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		// 테스트용 Member와 Order에 ID 설정
 		ReflectionTestUtils.setField(MOCK_MEMBER, "id", 1L);
 		ReflectionTestUtils.setField(MOCK_ORDER, "id", 1L);
 		ReflectionTestUtils.setField(MOCK_PROMOTION_PRODUCT, "id", 1L);
-
-		// findOrders 호출 시, 빈 페이지(PageImpl)를 반환하도록 설정 (총 갯수 0)
-		Pageable pageable = PageRequest.of(0, 5);
-		when(orderRepository.findOrders(MOCK_MEMBER.getId(), pageable))
-			.thenReturn(new PageImpl<>(Collections.emptyList(), pageable, 0));
 	}
 
 	@Test
 	public void 사용자를_찾을_수_없어서_주문_실패() throws Exception {
 		// given
-		AuthUser authUser = new AuthUser(1L, MOCK_MEMBER.getEmail(), MOCK_MEMBER.getRole());
-		StockResponse stockResponse = StockResponse.of(10000L, Map.of(1L, 2L), List.of());
+		AuthUser authUser = new AuthUser(MOCK_MEMBER.getId(), MOCK_MEMBER.getEmail(), MOCK_MEMBER.getRole());
+//		StockResponse stockResponse = StockResponse.of(10000L, Map.of(1L, 1L), List.of());
 		given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
 		BaseException result = assertThrows(BaseException.class,
-			() -> orderService.createOrder(authUser, stockResponse));
+			() -> orderService.createOrder(authUser, any(StockResponse.class)));
 
 		// then
 		assertEquals(ErrorCode.NOT_FOUND_MEMBER, result.getErrorCode());
@@ -204,7 +197,10 @@ public class OrderServiceTest {
 	public void 주문_전체_조회() throws Exception {
 		// given
 		AuthUser authUser = new AuthUser(MOCK_MEMBER.getId(), MOCK_MEMBER.getEmail(), MOCK_MEMBER.getRole());
-		PageRequest pageable = PageRequest.of(0, 5);
+		Pageable pageable = PageRequest.of(0, 5);
+
+		when(orderRepository.findOrders(MOCK_MEMBER.getId(), pageable))
+			.thenReturn(new PageImpl<>(Collections.emptyList(), pageable, 0));
 
 		// when
 		Page<OrderResponse> responsePage = orderService.getAllOrders(authUser, pageable);
