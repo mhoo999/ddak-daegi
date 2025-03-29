@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class RegisterRequest {
 
 	@Email
@@ -19,7 +20,8 @@ public class RegisterRequest {
 	@NotNull
 	private String address;
 
-	@NotNull @Size(max = 11)
+	@NotNull
+	@Size(max = 11)
 	private String phoneNumber;
 
 	@NotNull
