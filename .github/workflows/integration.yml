@@ -50,7 +50,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build with Gradle Wrapper
-        run: chmod +x ./gradlew && ./gradlew test --continue
+        run: chmod +x ./gradlew && ./gradlew jacocoTestReport
 
       - name: Jacoco Report to PR
         id: jacoco
