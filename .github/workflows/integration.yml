@@ -31,7 +31,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4 # 버전 태그를 사용하는 방식. 최신 v4.x.x 릴리스
 
       - name: Build with Gradle Wrapper
-        run: chmod +x ./gradlew && ./gradlew build
+        run: chmod +x ./gradlew && ./gradlew build jacocoTestCoverageVerification
 
   coverage-report:
     runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
         id: jacoco
         uses: madrapps/jacoco-report@v1.7.1
         with:
-          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          paths: ${{ github.workspace }}/build/jacocoHtml/index.html
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
@@ -69,6 +69,3 @@ jobs:
         with:
           script: |
             core.setFailed('서비스 레이어 전체 커버리지가 80% 미만입니다.')
-
-
-
