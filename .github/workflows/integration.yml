@@ -31,22 +31,40 @@ jobs:
         uses: gradle/actions/setup-gradle@v4 # 버전 태그를 사용하는 방식. 최신 v4.x.x 릴리스
 
       - name: Build with Gradle Wrapper
-        run: chmod +x ./gradlew && ./gradlew build --continue
+        run: chmod +x ./gradlew && ./gradlew build
+
+  coverage-report:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    needs: test-build   # test-build이 먼저 성공해야 실행됨 (선택사항)
+    if: always()         # ❗ 항상 실행되도록 (build가 실패해도 실행됨)
+    steps:
+      - uses: actions/checkout@v4
+      - name: JAVA 17 세팅
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Gradle 세팅
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run Tests & Generate Coverage
+        run: ./gradlew test --continue
 
       - name: Jacoco Report to PR
         id: jacoco
         uses: madrapps/jacoco-report@v1.7.1
         with:
-          paths: |
-            ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           title: '## 🧪 Service Layer Code Coverage'
           update-comment: true
-          debug-mode: false
-          pass-emoji: ':white_check_mark:'
-          fail-emoji: ':x:'
 
       - name: Fail PR if overall coverage is less than 80%
         if: ${{ steps.jacoco.outputs.coverage-overall < 80.0 }}
@@ -54,28 +72,6 @@ jobs:
         with:
           script: |
             core.setFailed('서비스 레이어 전체 커버리지가 80% 미만입니다.')
-
-#  review-bot:
-#    if: github.event_name == 'pull_request'
-#    runs-on: ubuntu-latest
-#    needs: test-build
-#
-#    steps:
-#      - uses: anc95/ChatGPT-CodeReview@main
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-#          PROMPT: |
-#            당신은 시니어 Java 백엔드 개발자입니다.
-#            아래 diff 내용을 리뷰하고 다음 항목을 지적하세요:
-#            - 잠재적인 버그나 예외 가능성
-#            - 잘못된 로직, 성능 이슈
-#            - 읽기 어려운 코드 또는 리팩토링 포인트
-#            - Clean Code / SOLID 원칙 위반
-#            문제가 없다고 판단되면 LGTM 작성.
-#          LANGUAGE: Korean
-#          MODEL: gpt-4o
-#          max_tokens: 2000
 
 
 
