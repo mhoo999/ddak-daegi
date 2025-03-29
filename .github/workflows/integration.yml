@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-html-report
-          path: build/jacocoHtml/index.html
+          path: build/jacocoHtml
 
       - name: Jacoco Report to PR
         id: jacoco
