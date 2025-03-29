@@ -13,6 +13,6 @@ public class HealthCheckController {
 
 	@GetMapping("/versions")
 	public String version() {
-		return "v3";
+		return "배포테스트";
 	}
 }
