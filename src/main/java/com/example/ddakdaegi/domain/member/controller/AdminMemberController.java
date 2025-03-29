@@ -3,6 +3,7 @@ package com.example.ddakdaegi.domain.member.controller;
 import com.example.ddakdaegi.domain.member.dto.request.MemberUpdateRoleRequest;
 import com.example.ddakdaegi.domain.member.service.AdminMemberService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +22,7 @@ public class AdminMemberController {
 
 	@PatchMapping("/v1/admin/roles-admin")
 	public void updateMemberRole(@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody MemberUpdateRoleRequest memberUpdateRoleRequest) {
+		@RequestBody @Valid MemberUpdateRoleRequest memberUpdateRoleRequest) {
 		adminMemberService.updateMemberRole(authUser, memberUpdateRoleRequest);
 	}
 

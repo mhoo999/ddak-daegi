@@ -12,6 +12,7 @@ import com.example.ddakdaegi.global.common.response.Response;
 import com.example.ddakdaegi.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ public class AuthController {
 	private final CookieUtil cookieUtil;
 
 	@PostMapping("/v1/auth/register")
-	public Response<String> signUp(@RequestBody RegisterRequest registerRequestDto,
+	public Response<String> signUp(@RequestBody @Valid RegisterRequest registerRequestDto,
 		HttpServletResponse response) {
 
 		TokenDto tokenDto = authService.signUp(registerRequestDto);
