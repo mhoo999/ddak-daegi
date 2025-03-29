@@ -49,11 +49,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Gradle 세팅
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Run Tests & Generate Coverage
-        run: ./gradlew test --continue
+      - name: Build with Gradle Wrapper
+        run: chmod +x ./gradlew && ./gradlew test --continue
 
       - name: Jacoco Report to PR
         id: jacoco
