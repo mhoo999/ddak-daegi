@@ -1,0 +1,59 @@
+name: 테스트 및 빌드
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "infra/jacoco-test-pr-branch" ]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest # 우분투 최신 버전에서
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4 # 현재 브랜치의 코드를 actions 서버에 올리기
+      - name: JAVA 17 세팅
+        uses: actions/setup-java@v4 # 자바 세팅 actions
+        with:
+          java-version: '17' # 17버전
+          distribution: 'temurin' # JDK 배포판 temurin이 대중적
+
+      - name: Gradle 세팅
+        uses: gradle/actions/setup-gradle@v4 # 버전 태그를 사용하는 방식. 최신 v4.x.x 릴리스
+
+      - name: Build with Gradle Wrapper
+        run: chmod +x ./gradlew && ./gradlew build jacocoTestReport
+
+      - name: Upload JaCoCo HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: build/jacocoHtml
+
+      - name: Jacoco Report to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          title: '## 🧪 Service Layer Code Coverage'
+          update-comment: true
+
+      - name: Fail PR if overall coverage is less than 80%
+        if: ${{ steps.jacoco.outputs.coverage-overall < 80.0 }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('서비스 레이어 전체 커버리지가 80% 미만입니다.')
+

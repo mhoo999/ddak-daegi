@@ -2,10 +2,15 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.4'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
+
+jacoco {
+    toolVersion = "0.8.9"
+}
 
 java {
     toolchain {
@@ -78,6 +83,38 @@ dependencies {
 
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+
+    def mainClasses = layout.buildDirectory.dir("classes/java/main").get().asFile
+
+    classDirectories.setFrom(
+            fileTree(dir: mainClasses, include: [
+                    "com/example/ddakdaegi/domain/**/service/**"
+            ])
+    )
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            includes = ['com.example.ddakdaegi.domain.*.service.*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+        }
+    }
 }
