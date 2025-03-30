@@ -1,0 +1,136 @@
+name: 배포
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gradle 테스트 실행
+        run: chmod +x ./gradlew && ./gradlew clean test
+
+  docker-build-push:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+
+
+      - name: DockerHub 로그인
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ github.sha }}
+
+  deploy-ec2:
+    needs: docker-build-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: ec2 배포
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Docker 설치여부 확인"
+            if ! command -v docker &> /dev/null; then
+              echo "Docker 미설치 상태... 설치시작"
+              sudo apt-get update -y
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker  
+              echo "Docker 설치 완료"
+            else 
+              echo "Docker 설치 상태"
+            fi
+            
+            echo "📝 .env 파일 생성"
+            cat <<EOF > .env
+            ${{ secrets.APP_ENV }}
+            EOF
+            
+            sudo chmod 666 /var/run/docker.sock
+            
+            echo "도커 이미지 pull"
+            sudo docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            
+            echo "🚦 현재 서비스 중인 포트 확인"
+            if docker ps --format '{{.Names}}' | grep -q 'blue'; then
+              CURRENT="blue"
+              NEXT="green"
+              CURRENT_PORT=8080
+              NEXT_PORT=8081
+            else
+              CURRENT="green"
+              NEXT="blue"
+              CURRENT_PORT=8081
+              NEXT_PORT=8080
+            fi
+            
+            echo "🚦 실행 대상 컨테이너 종료"
+            sudo docker stop ${NEXT} || true
+            
+            echo "🚦 실행 대상 컨테이너 삭제"
+            sudo docker rm ${NEXT} || true
+            
+            
+            echo "🆕 새 컨테이너 ${NEXT_PORT} 포트로 실행합니다..."
+            sudo docker run -d --restart unless-stopped --env-file .env -e SPRING_PROFILES_ACTIVE=prod --name ${NEXT} -p ${NEXT_PORT}:8080 ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            
+            echo "🩺 헬스 체크 시작..."
+            for i in {1..30}
+              do
+                echo "curl -s http://localhost:${NEXT_PORT}/health... 요청중..."
+                STATUS=$(curl -s http://localhost:${NEXT_PORT}/health | grep OK)
+              if [ -n "$STATUS" ]; then
+                echo "✅ 헬스 체크 통과"
+                break
+                fi
+            sleep 5
+            done
+            
+            if [ -z "$STATUS" ]; then
+              echo "❌ 새 컨테이너 헬스 체크 실패. 배포 중단"
+              exit 1
+            fi
+            
+            echo "🔧 Nginx 프록시 포트 변경 ${CURRENT_PORT} → ${NEXT_PORT}"
+            sudo sed -i "s/${CURRENT_PORT}/${NEXT_PORT}/g" /etc/nginx/conf.d/app.conf
+            sudo nginx -s reload
+            
+            
+            echo "🧹 이전 컨테이너 ${CURRENT_PORT} 종료"
+            sudo docker stop ${CURRENT} || true
+            
+            echo "🧹 이전 컨테이너 ${CURRENT_PORT} 삭제"
+            sudo docker rm ${CURRENT} || true
+            
+            echo "🎉 무중단 배포 완료! 현재 서비스 포트: ${NEXT_PORT}"

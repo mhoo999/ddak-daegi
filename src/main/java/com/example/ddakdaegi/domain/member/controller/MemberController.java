@@ -7,6 +7,7 @@ import com.example.ddakdaegi.domain.member.dto.response.MemberResponse;
 import com.example.ddakdaegi.domain.member.service.MemberService;
 import com.example.ddakdaegi.global.common.dto.AuthUser;
 import com.example.ddakdaegi.global.common.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +26,13 @@ public class MemberController {
 
 	@PutMapping("/v1/members")
 	public void updateProfile(@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody MemberUpdateRequest memberUpdateRequest) {
+		@RequestBody @Valid MemberUpdateRequest memberUpdateRequest) {
 		memberService.updateProfile(authUser, memberUpdateRequest);
 	}
 
 	@PatchMapping("/v1/members/password")
 	public void updatePassword(@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody MemberUpdatePasswordRequest memberUpdatePasswordRequest) {
+		@RequestBody @Valid MemberUpdatePasswordRequest memberUpdatePasswordRequest) {
 		memberService.updatePassword(authUser, memberUpdatePasswordRequest);
 	}
 
