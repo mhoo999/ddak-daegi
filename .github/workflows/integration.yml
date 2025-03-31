@@ -8,7 +8,7 @@ on:
   push:
     branches: [ "dev" ]
   pull_request:
-    branches: [ "infra/jacoco-test-pr-branch" ]
+    branches: [ "dev" ]
 
 jobs:
   test-build:
