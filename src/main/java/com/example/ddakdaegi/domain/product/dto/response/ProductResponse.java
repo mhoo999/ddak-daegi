@@ -32,10 +32,10 @@ public class ProductResponse {
 	// Product 클래스를 받는 생성자
 	public ProductResponse(Product product) {
 		this.id = product.getId();
-		this.member = new MemberResponse(product.getMember().getEmail(), product.getMember().getPhoneNumber(), product.getMember().getAddress());
+		this.member = MemberResponse.from(product.getMember());
 		this.description = product.getDescription();
 		this.name = product.getName();
-		this.image = new ImageResponse(product.getImage().getId(), product.getImage().getImageUrl(), product.getImage().getFileName());
+		this.image = ImageResponse.from(product.getImage());
 		this.soldOut = product.getSoldOut();
 		this.stock = product.getStock();
 		this.price = product.getPrice();
@@ -46,10 +46,10 @@ public class ProductResponse {
 	public static ProductResponse toDto(Product product) {
 		return new ProductResponse(
 			product.getId(),
-			new MemberResponse(product.getMember().getEmail(), product.getMember().getPhoneNumber(), product.getMember().getAddress()),
+			MemberResponse.from(product.getMember()),
 			product.getDescription(),
 			product.getName(),
-			new ImageResponse(product.getImage().getId(), product.getImage().getImageUrl(), product.getImage().getFileName()),
+			ImageResponse.from(product.getImage()),
 			product.getSoldOut(),
 			product.getStock(),
 			product.getPrice()
